@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class BulletCtrl : MonoBehaviourPunCallbacks
 {
-    public PhotonView photonView;
+    public PhotonView pv;
     int dir;
 
     // Start is called before the first frame update
@@ -25,15 +25,15 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Ground")
-            photonView.RPC("DestroyRPC", RpcTarget.AllBuffered);
-        if(!photonView.IsMine && collision.tag == "Player" && collision.GetComponent<PhotonView>().IsMine)
+            pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
+        if(!pv.IsMine && collision.tag == "Player" && collision.GetComponent<PhotonView>().IsMine)
         {
-            collision.GetComponent<PlayerCtrl>().Hit();
-            photonView.RPC("DestroyRPC", RpcTarget.AllBuffered);
+            collision.GetComponent<PlayerCtrl>().TakeDamage();
+            pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         }
     }
     [PunRPC]
-    void DirRPC(int dir) => this.dir = dir;
+    public void DirRPC(int dir) => this.dir = dir;
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);

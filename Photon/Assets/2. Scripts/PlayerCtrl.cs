@@ -11,7 +11,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public Rigidbody2D rb;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
-    public PhotonView photonView;
+    public PhotonView pv;
     public Text nicknameText;
     public Image hp;
 
@@ -34,10 +34,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Awake()
     {
-        nicknameText.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
-        nicknameText.color = photonView.IsMine ? Color.green : Color.red;
+        nicknameText.text = pv.IsMine ? PhotonNetwork.NickName : pv.Owner.NickName;
+        nicknameText.color = pv.IsMine ? Color.green : Color.red;
 
-        if (photonView.IsMine)
+        if (pv.IsMine)
         {
             var cm = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
             cm.Follow = transform;
@@ -48,7 +48,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     void Update()
     {
-        if (photonView.IsMine)
+        if (pv.IsMine)
         {
             //이동
             float velocity = Input.GetAxisRaw("Horizontal");
@@ -56,7 +56,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             if (velocity != 0)
             {
                 animator.SetBool("Walk", true);
-                photonView.RPC("FlipXRPC", RpcTarget.AllBuffered, velocity);
+                pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, velocity);
             }
             else
                 animator.SetBool("Walk", false);
@@ -65,14 +65,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             //바닥 체크, 점프
             isGround = Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(0, -0.5f), 0.07f, 1 << LayerMask.NameToLayer("Ground"));
             animator.SetBool("Jump", !isGround);
-            if (Input.GetKeyDown(KeyCode.Space) && isGround) photonView.RPC("JumpRPC", RpcTarget.All);
+            if (Input.GetKeyDown(KeyCode.Space) && isGround) pv.RPC(nameof(JumpRPC), RpcTarget.All);
             //
 
             //총알 발사
             if (Input.GetKeyDown(KeyCode.C))
             {
                 PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(spriteRenderer.flipX ? -0.4f : 0.4f, -0.11f, 0), Quaternion.identity)
-                    .GetComponent<PhotonView>().RPC("DirRPC", RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
+                    .GetComponent<PhotonView>().RPC(nameof(BulletCtrl.DirRPC), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
                 animator.SetTrigger("Shot");
             }
         }
@@ -94,17 +94,23 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         rb.AddForce(Vector2.up * 700);
     }
 
-    public void Hit()
+    public void TakeDamage()
     {
         hp.fillAmount -= 0.1f;
         if(hp.fillAmount <= 0)
         {
             GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-            photonView.RPC("DestroyRPC", RpcTarget.AllBuffered);
+            pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         }
     }
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
+
+    [PunRPC]
+    public void SelectItems()
+    {
+        
+    }
 
 }

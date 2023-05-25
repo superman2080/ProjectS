@@ -50,6 +50,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void Spawn()
     {
+        //랜덤 위치 생성
         PhotonNetwork.Instantiate("Player", new Vector3(Random.Range(-7f, 21f), 4, 0), Quaternion.identity);
         respawnPanel.SetActive(false);
     }
