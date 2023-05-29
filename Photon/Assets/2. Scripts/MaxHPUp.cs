@@ -5,12 +5,15 @@ using Photon.Pun;
 
 public class MaxHPUp : ItemCtrl
 {
+    [Range(100f, 200f)]
+    public float maxHP;
+
     [PunRPC]
     public override void OnGetItem(int actorNum, string itemName)
     {
-        if (!pv.IsMine)
-            return;
         base.OnGetItem(actorNum, itemName);
-        Debug.LogError(owner.name + "MaxHPUp!!");
+        owner.maxHp = maxHP;
+        owner.hpBar.color = Color.magenta;
+        Debug.LogError(owner.maxHp);
     }
 }

@@ -70,3 +70,4 @@ MonoBehaviour:
   owner: {fileID: 0}
   pv: {fileID: 0}
   itemManager: {fileID: 0}
+  maxHP: 150

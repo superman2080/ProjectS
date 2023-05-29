@@ -241,9 +241,11 @@ MonoBehaviour:
   damage: 10
   maxHp: 100
   hp: 100
+  speed: 0
   itemTr: {fileID: 1238188240433673599}
   itemList: []
   actorNum: 0
+  isDead: 0
 --- !u!1 &1728941103900275045
 GameObject:
   m_ObjectHideFlags: 0

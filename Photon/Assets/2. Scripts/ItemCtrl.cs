@@ -18,7 +18,6 @@ public abstract class ItemCtrl : MonoBehaviourPunCallbacks
     [PunRPC]
     public virtual void OnGetItem(int actorNum, string itemName)
     {
-
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (var player in players)
         {
@@ -29,14 +28,10 @@ public abstract class ItemCtrl : MonoBehaviourPunCallbacks
             }
         }
         ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
+        item.owner = owner;
         item.transform.parent = owner.itemTr;
         owner.itemList.Add(item);
 
-        foreach (var tempItem in itemManager.itemList)
-        {
-            PhotonNetwork.Destroy(tempItem.gameObject);
-        }
-        itemManager.itemList.Clear();
         owner.pv.RPC(nameof(PlayerCtrl.Respawn), RpcTarget.AllBuffered);
     }
 }
