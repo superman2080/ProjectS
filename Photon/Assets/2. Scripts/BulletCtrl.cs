@@ -7,11 +7,13 @@ using Photon.Pun;
 public class BulletCtrl : MonoBehaviourPunCallbacks
 {
     public PhotonView pv;
+    public float damage;
     int dir;
 
     // Start is called before the first frame update
     void Start()
     {
+        pv = gameObject.GetComponent<PhotonView>();
         Destroy(gameObject, 3.5f);
     }
 
@@ -28,7 +30,7 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
             pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         if(!pv.IsMine && collision.tag == "Player" && collision.GetComponent<PhotonView>().IsMine)
         {
-            collision.GetComponent<PlayerCtrl>().TakeDamage();
+            collision.GetComponent<PlayerCtrl>().pv.RPC(nameof(PlayerCtrl.TakeDamage), RpcTarget.AllBuffered, damage);
             pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         }
     }
@@ -36,5 +38,8 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
     public void DirRPC(int dir) => this.dir = dir;
 
     [PunRPC]
-    void DestroyRPC() => Destroy(gameObject);
+    public void DestroyRPC() => Destroy(gameObject);
+
+    [PunRPC]
+    public void SetDamage(float damage) => this.damage = damage;
 }

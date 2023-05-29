@@ -44,6 +44,13 @@ MonoBehaviour:
   - DirRPC
   - DestroyRPC
   - SelectItems
+  - AddItem
+  - OnGetItem
+  - InitialPlayerProps
+  - PlayerDeath
+  - Respawn
+  - TakeDamage
+  - SetDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
