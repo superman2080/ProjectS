@@ -13,7 +13,16 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public SpriteRenderer spriteRenderer;
     public PhotonView pv;
     public Text nicknameText;
-    public Image hp;
+    public GameObject selectItemPanel;
+    public Image hpBar;
+    public float damage;
+    [Range(0, 100)]
+    public float maxHp;
+    public float hp;
+    public Transform itemTr;
+    public List<ItemCtrl> itemList = new List<ItemCtrl>();
+    [HideInInspector]
+    public int actorNum;
 
     private bool isGround;
     private Vector3 curPos;
@@ -23,12 +32,12 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
-            stream.SendNext(hp.fillAmount);
+            stream.SendNext(hp);
         }
         else
         {
             curPos = (Vector3)stream.ReceiveNext();
-            hp.fillAmount = (float)stream.ReceiveNext();
+            hp = (float)stream.ReceiveNext();
         }
     }
 
@@ -44,6 +53,22 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             cm.LookAt = transform;
 
         }
+        actorNum = PhotonNetwork.LocalPlayer.ActorNumber;
+        //꺼져있는 오브젝트이기 때문에
+        selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
+        selectItemPanel.SetActive(false);
+    }
+
+    public void Start()
+    {
+        pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void InitialPlayerProps()
+    {
+        hp = maxHp;
+        hpBar.fillAmount = 1;
     }
 
     void Update()
@@ -71,8 +96,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             //총알 발사
             if (Input.GetKeyDown(KeyCode.C))
             {
-                PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(spriteRenderer.flipX ? -0.4f : 0.4f, -0.11f, 0), Quaternion.identity)
-                    .GetComponent<PhotonView>().RPC(nameof(BulletCtrl.DirRPC), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
+                BulletCtrl b = PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(spriteRenderer.flipX ? -0.4f : 0.4f, -0.11f, 0), Quaternion.identity).GetComponent<BulletCtrl>();
+                b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
+                b.GetComponent<PhotonView>().RPC(nameof(BulletCtrl.DirRPC), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
                 animator.SetTrigger("Shot");
             }
         }
@@ -94,13 +120,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         rb.AddForce(Vector2.up * 700);
     }
 
-    public void TakeDamage()
+    [PunRPC]
+    public void TakeDamage(float dmg)
     {
-        hp.fillAmount -= 0.1f;
-        if(hp.fillAmount <= 0)
+        hp -= dmg;
+        hpBar.fillAmount = hp / maxHp;
+        if(hp <= 0)
         {
-            GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-            pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
+            pv.RPC(nameof(PlayerDeath), RpcTarget.AllBuffered);
         }
     }
 
@@ -108,9 +135,23 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void DestroyRPC() => Destroy(gameObject);
 
     [PunRPC]
-    public void SelectItems()
+    public void PlayerDeath()
     {
-        
+        spriteRenderer.enabled = false;
+        transform.Find("Canvas").gameObject.SetActive(false);
+        if (pv.IsMine)
+            selectItemPanel.SetActive(true);
     }
 
+    [PunRPC]
+    public void Respawn()
+    {
+        spriteRenderer.enabled = true;
+        transform.Find("Canvas").gameObject.SetActive(true);
+        pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
+        if (pv.IsMine)
+        {
+            selectItemPanel.SetActive(false);
+        }
+    }
 }

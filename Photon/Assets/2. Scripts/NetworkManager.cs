@@ -38,8 +38,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected)
             PhotonNetwork.Disconnect();
-
-        Debug.Log(PhotonNetwork.IsConnected);
     }
 
     public override void OnDisconnected(DisconnectCause cause)
