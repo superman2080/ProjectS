@@ -157,18 +157,31 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
             //
+            StartCoroutine(FireBulletFlipX(flip, 0.5f));
             pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, flip);
             float angle = GameMath.GetAngle(transform.position, bulletMovePos);
             BulletCtrl b = PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(spriteRenderer.flipX ? -0.4f : 0.4f, -0.11f, 0), Quaternion.identity).GetComponent<BulletCtrl>();
             b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
             b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, angle);
-            b.GetComponent<PhotonView>().RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
             animator.SetTrigger("Shot");
         }
     }
 
     [PunRPC]
     void FlipXRPC(float axis) => spriteRenderer.flipX = axis == -1;
+
+    private IEnumerator FireBulletFlipX(float axis, float totalTime)
+    {
+        float dT = 0;
+        while (true)
+        {
+            pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, axis);
+            dT += Time.deltaTime;
+            yield return null;
+            if (dT > totalTime)
+                break;
+        }
+    }
 
     [PunRPC]
     void JumpRPC()
