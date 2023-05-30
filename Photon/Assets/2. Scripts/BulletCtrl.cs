@@ -8,7 +8,6 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
 {
     public PhotonView pv;
     public float damage;
-    int dir;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +19,7 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.right * 7 * Time.deltaTime * dir);
+        transform.Translate(Vector3.left * 7 * Time.deltaTime);
     }
 
 
@@ -35,7 +34,7 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    public void DirRPC(int dir) => this.dir = dir;
+    public void SetAngle(float ang) => transform.eulerAngles = new Vector3(0, 0, ang);
 
     [PunRPC]
     public void DestroyRPC() => Destroy(gameObject);

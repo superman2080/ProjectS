@@ -24,7 +24,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public float maxHp;
     public float hp;
     public float speed;
-    private Vector2 cursorPos;
+    private Vector2 bulletMovePos;
     [Header("Related to items")]
     public Transform itemTr;
     public List<ItemCtrl> itemList = new List<ItemCtrl>();
@@ -128,11 +128,41 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     void PlayerAttack()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+
+        if (Input.GetMouseButtonDown(0))
         {
+            bulletMovePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            float flip = 1;
+            //총쏘는 방향 바라보기
+            if(spriteRenderer.flipX == false)           //정방향 보고있을 때
+            {
+                if(transform.position.x > bulletMovePos.x)
+                {
+                    flip = -1;
+                }
+                else
+                {
+                    flip = 1;
+                }
+            }
+            else                                        //역방향 보고있을 때
+            {
+                if(transform.position.x < bulletMovePos.x)
+                {
+                    flip = 1;
+                }
+                else
+                {
+                    flip = -1;
+                }
+            }
+            //
+            pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, flip);
+            float angle = GameMath.GetAngle(transform.position, bulletMovePos);
             BulletCtrl b = PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(spriteRenderer.flipX ? -0.4f : 0.4f, -0.11f, 0), Quaternion.identity).GetComponent<BulletCtrl>();
             b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
-            b.GetComponent<PhotonView>().RPC(nameof(BulletCtrl.DirRPC), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
+            b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, angle);
+            b.GetComponent<PhotonView>().RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
             animator.SetTrigger("Shot");
         }
     }
