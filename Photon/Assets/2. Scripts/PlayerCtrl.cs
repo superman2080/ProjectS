@@ -16,6 +16,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public PhotonView pv;
     public Text nicknameText;
     public GameObject selectItemPanel;
+    public SpriteRenderer defaultGun;
     public Image hpBar;
 
     [Header("Related to attack")]
@@ -24,7 +25,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public float maxHp;
     public float hp;
     public float speed;
-    private Vector2 cursorPos;
+    private Vector2 bulletMovePos;
     [Header("Related to items")]
     public Transform itemTr;
     public List<ItemCtrl> itemList = new List<ItemCtrl>();
@@ -32,6 +33,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public event EventHandler OnPlayerAttack;
     public event EventHandler OnPlayerJump;
     public event EventHandler OnTakenDamage;
+    public EventHandler DefaultAttack;
 
     [HideInInspector]
     public int actorNum;
@@ -70,6 +72,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         //꺼져있는 오브젝트이기 때문에
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         selectItemPanel.SetActive(false);
+
+        //이벤트 처리 부분
+
     }
 
     public void Start()
@@ -112,14 +117,13 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         if (velocity != 0)
         {
             animator.SetBool("Walk", true);
-            pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, velocity);
         }
         else
             animator.SetBool("Walk", false);
         //
 
         //바닥 체크, 점프
-        isGround = Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(0, -0.5f), 0.07f, 1 << LayerMask.NameToLayer("Ground"));
+        isGround = Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(0, -0.5f), 0.1f, 1 << LayerMask.NameToLayer("Ground"));
         animator.SetBool("Jump", !isGround);
         if (Input.GetKeyDown(KeyCode.Space) && isGround) pv.RPC(nameof(JumpRPC), RpcTarget.All);
         //
@@ -128,17 +132,63 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     void PlayerAttack()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        bulletMovePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float flip = 1;
+        //총쏘는 방향 바라보기
+        if (spriteRenderer.flipX == false)           //정방향 보고있을 때
         {
+            if (transform.position.x > bulletMovePos.x)
+            {
+                flip = -1;
+            }
+            else
+            {
+                flip = 1;
+            }
+        }
+        else                                        //역방향 보고있을 때
+        {
+            if (transform.position.x < bulletMovePos.x)
+            {
+                flip = 1;
+            }
+            else
+            {
+                flip = -1;
+            }
+        }
+        pv.RPC(nameof(FlipXRPC), RpcTarget.All, flip);
+        if (Input.GetMouseButtonDown(0))
+        {
+
+            //
+            StartCoroutine(FireBulletFlipX(flip, 0.5f));
+            float angle = GameMath.GetAngle(transform.position, bulletMovePos);
             BulletCtrl b = PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(spriteRenderer.flipX ? -0.4f : 0.4f, -0.11f, 0), Quaternion.identity).GetComponent<BulletCtrl>();
             b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
-            b.GetComponent<PhotonView>().RPC(nameof(BulletCtrl.DirRPC), RpcTarget.All, spriteRenderer.flipX ? -1 : 1);
+            b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, angle);
             animator.SetTrigger("Shot");
         }
     }
 
     [PunRPC]
-    void FlipXRPC(float axis) => spriteRenderer.flipX = axis == -1;
+    void FlipXRPC(float axis)
+    {
+        spriteRenderer.flipX = axis == -1;
+    }
+
+    private IEnumerator FireBulletFlipX(float axis, float totalTime)
+    {
+        float dT = 0;
+        while (true)
+        {
+            pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, axis);
+            dT += Time.deltaTime;
+            yield return null;
+            if (dT > totalTime)
+                break;
+        }
+    }
 
     [PunRPC]
     void JumpRPC()
