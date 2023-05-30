@@ -14,6 +14,5 @@ public class MaxHPUp : ItemCtrl
         base.OnGetItem(actorNum, itemName);
         owner.maxHp = maxHP;
         owner.hpBar.color = Color.magenta;
-        Debug.LogError(owner.maxHp);
     }
 }
