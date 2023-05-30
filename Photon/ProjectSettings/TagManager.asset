@@ -43,3 +43,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Gun
+    uniqueID: 3350904773
+    locked: 0
