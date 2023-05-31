@@ -24,8 +24,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public float damage;
     [Range(0, 100)]
     public float maxHp;
+    [HideInInspector]
     public float hp;
-    public float speed;
+    [Range(1, 10)]
+    public float speed = 4;
     private Vector2 bulletMovePos;
     private float gunTrX;
     private float flip = 1;
@@ -85,6 +87,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
         //이벤트 처리 부분
+        if (pv.IsMine)
+        {
+            pv.RPC(nameof(InitialEvents), RpcTarget.AllBuffered);
+        }
     }
 
     public void Start()
@@ -98,6 +104,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         hp = maxHp;
         hpBar.fillAmount = 1;
+        OnSpawnPlayer?.Invoke(this, EventArgs.Empty);
+    }
+
+    [PunRPC]
+    private void InitialEvents()
+    {
+        DefaultAttack += (sender, e) => { CreateBullet(damage, gunAngle); };
+        OnPlayerAttack += DefaultAttack;
     }
 
     void Update()
@@ -125,11 +139,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void PlayerMove()
     {
         float velocity = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(4 * velocity, rb.velocity.y);
+        rb.velocity = new Vector2(speed * velocity, rb.velocity.y);
         if (velocity != 0)
-        {
             animator.SetBool("Walk", true);
-        }
         else
             animator.SetBool("Walk", false);
         //
@@ -175,11 +187,16 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         {
             //
             StartCoroutine(FireBulletFlipXCor(flip, 0.5f));
-            BulletCtrl b = PhotonNetwork.Instantiate("Bullet", gunTr.position, Quaternion.identity).GetComponent<BulletCtrl>();
-            b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
-            b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, gunAngle);
+            OnPlayerAttack?.Invoke(this, EventArgs.Empty);
             animator.SetTrigger("Shot");
         }
+    }
+
+    private void CreateBullet(float dmg, float ang)
+    {
+        BulletCtrl b = PhotonNetwork.Instantiate("Bullet", gunTr.position, Quaternion.identity).GetComponent<BulletCtrl>();
+        b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
+        b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, ang);
     }
 
     void FlipXRPC(float axis)
@@ -219,6 +236,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         hp -= dmg;
         hpBar.fillAmount = hp / maxHp;
+        OnTakenDamage?.Invoke(this, EventArgs.Empty);
         if(hp <= 0)
         {
             pv.RPC(nameof(PlayerDeath), RpcTarget.AllBuffered);
