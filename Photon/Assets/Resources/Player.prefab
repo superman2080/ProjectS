@@ -244,7 +244,7 @@ MonoBehaviour:
   damage: 10
   maxHp: 100
   hp: 100
-  speed: 0
+  speed: 4
   itemTr: {fileID: 1238188240433673599}
   itemList: []
   actorNum: 0
