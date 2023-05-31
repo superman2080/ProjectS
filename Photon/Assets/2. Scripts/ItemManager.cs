@@ -32,7 +32,6 @@ public class ItemManager : MonoBehaviour
             btn.onClick.RemoveAllListeners();
             ItemCtrl item = PhotonNetwork.Instantiate("Items/MaxHPUp", Vector3.zero, Quaternion.identity).GetComponent<ItemCtrl>();
             item.transform.parent = transform;
-            item.itemManager = this;
             itemList.Add(item);
             
             btn.onClick.AddListener(() => {

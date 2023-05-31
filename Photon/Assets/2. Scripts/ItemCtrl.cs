@@ -8,7 +8,6 @@ public abstract class ItemCtrl : MonoBehaviourPunCallbacks
     [SerializeField]                //µð¹ö±ë¿ë
     protected PlayerCtrl owner;
     public PhotonView pv;
-    public ItemManager itemManager;
 
     private void Start()
     {

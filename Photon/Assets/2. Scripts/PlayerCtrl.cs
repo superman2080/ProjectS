@@ -28,6 +28,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public float speed;
     private Vector2 bulletMovePos;
     private float gunTrX;
+    private float flip = 1;
     private float gunAngle;
     [Header("Related to items")]
     public Transform itemTr;
@@ -52,11 +53,15 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         {
             stream.SendNext(transform.position);
             stream.SendNext(hp);
+            stream.SendNext(gunAngle);
+            stream.SendNext(flip);
         }
         else
         {
             curPos = (Vector3)stream.ReceiveNext();
             hp = (float)stream.ReceiveNext();
+            gunAngle = (float)stream.ReceiveNext();
+            flip = (float)stream.ReceiveNext();
         }
     }
 
@@ -112,6 +117,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
+            FlipXRPC(flip);
+            SetGunAngle(gunAngle);
         }
     }
 
@@ -138,8 +145,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void PlayerAttack()
     {
         bulletMovePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        float flip = 1;
         //총쏘는 방향 바라보기
         if (spriteRenderer.flipX == false)           //정방향 보고있을 때
         {
@@ -164,31 +169,26 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
         gunAngle = GameMath.GetAngle(transform.position, bulletMovePos);
-        
-        pv.RPC(nameof(FlipXRPC), RpcTarget.All, flip);
-        pv.RPC(nameof(SetGunAngle), RpcTarget.All, gunAngle);
+        FlipXRPC(flip);
+        SetGunAngle(gunAngle);
         if (Input.GetMouseButtonDown(0))
         {
-
             //
             StartCoroutine(FireBulletFlipXCor(flip, 0.5f));
-            float angle = GameMath.GetAngle(gunTr.position, bulletMovePos);
             BulletCtrl b = PhotonNetwork.Instantiate("Bullet", gunTr.position, Quaternion.identity).GetComponent<BulletCtrl>();
             b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
-            b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, angle);
+            b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, gunAngle);
             animator.SetTrigger("Shot");
         }
     }
 
-    [PunRPC]
     void FlipXRPC(float axis)
     {
         spriteRenderer.flipX = axis == -1;
         gunTr.transform.localScale = new Vector3(axis, 1, 1);
-        gunTr.transform.localPosition = new Vector3(gunTrX * axis, gunTr.localPosition.y /*-Mathf.Sin(GameMath.GetAngle(gunTr.position, bulletMovePos) * Mathf.Deg2Rad) * 0.25f*/, 0);
+        gunTr.transform.localPosition = new Vector3(-Mathf.Cos(gunAngle * Mathf.Deg2Rad) * 0.5f, -Mathf.Sin(gunAngle * Mathf.Deg2Rad) * 0.25f, 0);
     }
 
-    [PunRPC]
     void SetGunAngle(float ang)
     {
         gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
@@ -199,7 +199,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         float dT = 0;
         while (true)
         {
-            pv.RPC(nameof(FlipXRPC), RpcTarget.AllBuffered, axis);
+            FlipXRPC(axis);
             dT += Time.deltaTime;
             yield return null;
             if (dT > totalTime)
