@@ -28,6 +28,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public float hp;
     [Range(1, 10)]
     public float speed = 4;
+    public bool isInvincible = false;
     private Vector2 bulletMovePos;
     private float gunTrX;
     private float flip = 1;
@@ -234,9 +235,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void TakeDamage(float dmg)
     {
+        OnTakenDamage?.Invoke(this, EventArgs.Empty);
         hp -= dmg;
         hpBar.fillAmount = hp / maxHp;
-        OnTakenDamage?.Invoke(this, EventArgs.Empty);
         if(hp <= 0)
         {
             pv.RPC(nameof(PlayerDeath), RpcTarget.AllBuffered);
