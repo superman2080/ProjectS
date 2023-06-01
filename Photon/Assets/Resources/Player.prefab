@@ -245,6 +245,7 @@ MonoBehaviour:
   maxHp: 100
   hp: 100
   speed: 4
+  isInvinced: 0
   itemTr: {fileID: 1238188240433673599}
   itemList: []
   actorNum: 0
