@@ -14,9 +14,10 @@ public class SpeedUp : ItemCtrl
     }
 
     [PunRPC]
-    public override void OnGetItem(int actorNum, string itemName)
+    public override void OnGetItem(int actorNum)
     {
-        base.OnGetItem(actorNum, itemName);
+        base.OnGetItem(actorNum);
+
         owner.OnSpawnPlayer += ItemEvent;
     }
 }
