@@ -57,6 +57,12 @@ MonoBehaviour:
   - FireBulletFlipX
   - SetGunAngle
   - InitialEvents
+  - RemoveItem
+  - GetItem
+  - SetIsInvincible
+  - SetIsProtected
+  - ShieldOff
+  - SetOwner
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

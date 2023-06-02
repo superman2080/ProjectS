@@ -193,7 +193,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    private void CreateBullet(float dmg, float ang)
+    public void CreateBullet(float dmg, float ang)
     {
         BulletCtrl b = PhotonNetwork.Instantiate("Bullet", gunTr.position, Quaternion.identity).GetComponent<BulletCtrl>();
         b.pv.RPC(nameof(BulletCtrl.SetDamage), RpcTarget.All, damage);
@@ -236,7 +236,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public void TakeDamage(float dmg)
     {
         OnTakenDamage?.Invoke(this, EventArgs.Empty);
-        hp -= dmg;
+        if (!isInvincible)
+            hp -= dmg;
         hpBar.fillAmount = hp / maxHp;
         if(hp <= 0)
         {
@@ -248,6 +249,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void DestroyRPC() => Destroy(gameObject);
     [PunRPC]
     public void SetActorNum(int n) => actorNum = n;
+
+    [PunRPC]
+    public void SetIsInvincible(bool b) => isInvincible = b;
 
     [PunRPC]
     public void PlayerDeath()

@@ -6,8 +6,7 @@ using System;
 
 public abstract class ItemCtrl : MonoBehaviourPunCallbacks
 {
-    [SerializeField]                //디버깅용
-    protected PlayerCtrl owner;
+    public PlayerCtrl owner;
     public PhotonView pv;
     public EventHandler ItemEvent;
     private void Start()
@@ -16,23 +15,11 @@ public abstract class ItemCtrl : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public virtual void OnGetItem(int actorNum, string itemName)
+    public virtual void OnGetItem(int actorNum)
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var player in players)
-        {
-            if(player.GetComponent<PlayerCtrl>().actorNum == actorNum)
-            {
-                owner = player.GetComponent<PlayerCtrl>();
-                break;
-            }
-        }
-        ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
-        item.owner = owner;
-        item.transform.parent = owner.itemTr;
-
+        transform.parent = owner.itemTr;
+        owner.itemList.Add(this);
         ItemEvent += (sender, e) => { ItemEffect(); };
-        owner.itemList.Add(item);
         owner.pv.RPC(nameof(PlayerCtrl.Respawn), RpcTarget.AllBuffered);
     }
 
@@ -49,5 +36,26 @@ public abstract class ItemCtrl : MonoBehaviourPunCallbacks
             }
         }
         return false;
+    }
+
+    [PunRPC]
+    protected void RemoveItem(string itemName)
+    {
+
+    }
+
+    [PunRPC]
+    public void SetOwner(int actorNum)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        //죽은 플레이어를 검색해서 그 플레이어가 아이템 선택
+        foreach (var player in players)
+        {
+            if (actorNum == player.GetComponent<PlayerCtrl>().actorNum)
+            {
+                owner = player.GetComponent<PlayerCtrl>();
+                break;
+            }
+        }
     }
 }
