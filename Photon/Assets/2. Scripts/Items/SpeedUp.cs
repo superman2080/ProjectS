@@ -5,7 +5,7 @@ using Photon.Pun;
 
 public class SpeedUp : ItemCtrl
 {
-    [Range(100f, 200f)]
+    [Range(4f, 10f)]
     public float speed;
 
     public override void ItemEffect()

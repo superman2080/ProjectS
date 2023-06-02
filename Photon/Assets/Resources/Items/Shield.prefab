@@ -102,6 +102,7 @@ MonoBehaviour:
   pv: {fileID: 1200760955739264414}
   sR: {fileID: 4653125607679586023}
   shieldImg: {fileID: 21300000, guid: bd18fa26d64f08241b3f512481524b8e, type: 3}
+  shieldCnt: 3
 --- !u!114 &1200760955739264414
 MonoBehaviour:
   m_ObjectHideFlags: 0
