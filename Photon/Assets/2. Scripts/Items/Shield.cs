@@ -20,10 +20,6 @@ public class Shield : ItemCtrl
 
             pv.RPC(nameof(InitShield), RpcTarget.AllBuffered, --shieldCnt);
         }
-        else
-        {
-            pv.RPC(nameof(ShieldOff), RpcTarget.AllBuffered);
-        }
     }
 
     [PunRPC]
@@ -36,6 +32,9 @@ public class Shield : ItemCtrl
     {
         yield return null;
         owner.pv.RPC(nameof(PlayerCtrl.SetIsInvincible), RpcTarget.AllBuffered, false);
+        yield return new WaitUntil(() => owner.hp == 0);
+        yield return new WaitUntil(() => owner.hp != 0);
+        pv.RPC(nameof(InitShield), RpcTarget.AllBuffered, 3);
     }
 
     [PunRPC]
@@ -44,6 +43,10 @@ public class Shield : ItemCtrl
         shieldCnt = n;
         sR.enabled = n > 0;
         isProtected = n > 0;
+        if(shieldCnt == 0)
+        {
+            StartCoroutine(ShieldOffCor());
+        }
     }
 
     [PunRPC]
