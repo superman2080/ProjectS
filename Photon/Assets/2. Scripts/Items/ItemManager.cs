@@ -91,7 +91,7 @@ public class ItemManager : MonoBehaviour
 
                 while (true)
                 {
-                    rand = Random.Range(0, 3);
+                    rand = Random.Range(0, 4); /////////////////////////
                     bool notEqual = true;
                     for (int i = 0; i < tempItemList.Count; i++)
                     {
