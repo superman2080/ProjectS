@@ -68,5 +68,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
-  pv: {fileID: 0}
+  pv: {fileID: 1859291759275911990}
   maxHP: 150
