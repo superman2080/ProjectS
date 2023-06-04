@@ -52,29 +52,7 @@ public class ItemManager : MonoBehaviour
                 //pv.RPC(nameof(GetItem), RpcTarget.AllBuffered, actorNum, itemName);
             });
         }
-
-        //foreach (var btn in selectBtn)
-        //{
-        //    btn.onClick.RemoveAllListeners();
-        //    foreach (var item in tempItemList)
-        //    {
-        //        btn.GetComponentInChildren<Text>().text = item;
-        //        btn.onClick.AddListener(() =>
-        //        {
-        //            pv.RPC(nameof(GetItem), RpcTarget.AllBuffered, actorNum, item);
-        //        });
-        //    }
-        //}
     }
-
-    //[PunRPC]
-    //public void GetItem(int actorNum, string itemName)
-    //{
-    //    Debug.LogError("æ∆¿Ã≈€ »πµÊ");
-
-
-
-    //}
 
     private List<string> GetRandomItemNames()
     {
