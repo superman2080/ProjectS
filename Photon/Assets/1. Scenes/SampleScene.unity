@@ -3468,7 +3468,6 @@ MonoBehaviour:
   - {fileID: 170265590}
   - {fileID: 1012739177}
   - {fileID: 2130400158}
-  itemList: []
   pv: {fileID: 1060651003}
 --- !u!114 &1060651003
 MonoBehaviour:

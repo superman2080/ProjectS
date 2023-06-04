@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 385198685089537511}
   - component: {fileID: 385198685089537508}
-  - component: {fileID: 7805520394728463137}
+  - component: {fileID: 4303406759267848390}
   m_Layer: 0
-  m_Name: SpeedUp
+  m_Name: SizeDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,7 +55,7 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7805520394728463137
+--- !u!114 &4303406759267848390
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,9 +64,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 385198685089537509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38c3fa37ea48f86438e450b03a2642b3, type: 3}
+  m_Script: {fileID: 11500000, guid: 01f3f24c19b23964d9f581d5297f443b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
   pv: {fileID: 385198685089537508}
-  speed: 7
+  size: 0.709

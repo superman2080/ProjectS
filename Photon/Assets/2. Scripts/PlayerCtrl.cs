@@ -50,6 +50,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     private Vector3 curPos;
 
 
+
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -98,6 +100,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         pv.RPC(nameof(SetActorNum), RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
+
+
     }
 
     [PunRPC]
@@ -186,8 +190,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         SetGunAngle(gunAngle);
         if (Input.GetMouseButtonDown(0))
         {
-            //
-            StartCoroutine(FireBulletFlipXCor(flip, 0.5f));
             OnPlayerAttack?.Invoke(this, EventArgs.Empty);
             animator.SetTrigger("Shot");
         }
@@ -210,19 +212,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void SetGunAngle(float ang)
     {
         gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
-    }
-
-    private IEnumerator FireBulletFlipXCor(float axis, float totalTime)
-    {
-        float dT = 0;
-        while (true)
-        {
-            FlipXRPC(axis);
-            dT += Time.deltaTime;
-            yield return null;
-            if (dT > totalTime)
-                break;
-        }
     }
 
     [PunRPC]
@@ -257,6 +246,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public void PlayerDeath()
     {
         spriteRenderer.enabled = false;
+        gunSprite.enabled = false;
         transform.Find("Canvas").gameObject.SetActive(false);
         gameObject.GetComponent<Collider2D>().enabled = false;
         rb.isKinematic = true;
@@ -269,15 +259,16 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public void Respawn()
     {
         spriteRenderer.enabled = true;
+        gunSprite.enabled = true;
         transform.Find("Canvas").gameObject.SetActive(true);
         gameObject.GetComponent<Collider2D>().enabled = true;
         rb.isKinematic = false;
-        transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
         isDead = false;
         pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
         if (pv.IsMine)
         {
             selectItemPanel.SetActive(false);
+            transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
         }
     }
 }
