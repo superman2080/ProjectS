@@ -29,10 +29,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [Range(1, 10)]
     public float speed = 4;
     public bool isInvincible = false;
+    public float gunAngle;
     private Vector2 bulletMovePos;
     private float gunTrX;
     private float flip = 1;
-    private float gunAngle;
     [Header("Related to items")]
     public Transform itemTr;
     public List<ItemCtrl> itemList = new List<ItemCtrl>();
@@ -48,9 +48,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public bool isDead = false;
     private bool isGround;
     private Vector3 curPos;
-
-
-
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -255,6 +252,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             selectItemPanel.SetActive(true);
     }
 
+    public void ClearAttackEvent() => OnPlayerAttack = null;
+
     [PunRPC]
     public void Respawn()
     {
@@ -271,4 +270,5 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
         }
     }
+
 }
