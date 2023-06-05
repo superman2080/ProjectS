@@ -27,7 +27,7 @@ public class ItemManager : MonoBehaviour
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int actorNum = 0;
-        //Á×Àº ÇÃ·¹ÀÌ¾î¸¦ °Ë»öÇØ¼­ ±× ÇÃ·¹ÀÌ¾î°¡ ¾ÆÀÌÅÛ ¼±ÅÃ
+        //ì£½ì€ í”Œë ˆì´ì–´ë¥¼ ê²€ìƒ‰í•´ì„œ ê·¸ í”Œë ˆì´ì–´ê°€ ì•„ì´í…œ ì„ íƒ
         foreach (var player in players)
         {
             if (player.GetComponent<PlayerCtrl>().isDead == true)
