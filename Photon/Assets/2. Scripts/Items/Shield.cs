@@ -32,8 +32,8 @@ public class Shield : ItemCtrl
     {
         yield return null;
         owner.pv.RPC(nameof(PlayerCtrl.SetIsInvincible), RpcTarget.AllBuffered, false);
-        yield return new WaitUntil(() => owner.hp == 0);
-        yield return new WaitUntil(() => owner.hp != 0);
+        yield return new WaitUntil(() => owner.hp <= 0);
+        yield return new WaitUntil(() => owner.hp > 0);
         pv.RPC(nameof(InitShield), RpcTarget.AllBuffered, 3);
     }
 

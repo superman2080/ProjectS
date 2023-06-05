@@ -19,6 +19,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public SpriteRenderer gunSprite;
     public Transform gunTr;
     public Image hpBar;
+    public Image attGauge;
 
     [Header("Related to attack")]
     public float damage;
@@ -28,11 +29,15 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public float hp;
     [Range(1, 10)]
     public float speed = 4;
+    [HideInInspector]
     public bool isInvincible = false;
+    [HideInInspector]
+    public float gunAngle;
+    public float attSpeed;
+    private float attDelta;
     private Vector2 bulletMovePos;
     private float gunTrX;
     private float flip = 1;
-    private float gunAngle;
     [Header("Related to items")]
     public Transform itemTr;
     public List<ItemCtrl> itemList = new List<ItemCtrl>();
@@ -48,9 +53,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public bool isDead = false;
     private bool isGround;
     private Vector3 curPos;
-
-
-
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -86,7 +88,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         //꺼져있는 오브젝트이기 때문에
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         selectItemPanel.SetActive(false);
-
+        attGauge = GameObject.Find("Canvas").transform.Find("IngameUI").Find("AttackGauge").GetComponent<Image>();
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
         //이벤트 처리 부분
@@ -188,11 +190,19 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gunAngle = GameMath.GetAngle(transform.position, bulletMovePos);
         FlipXRPC(flip);
         SetGunAngle(gunAngle);
-        if (Input.GetMouseButtonDown(0))
+        if (attDelta <= 1 / attSpeed)
+        {
+            attDelta += Time.deltaTime;
+
+        }
+
+        if (Input.GetMouseButtonDown(0) && attDelta >= 1 / attSpeed)
         {
             OnPlayerAttack?.Invoke(this, EventArgs.Empty);
             animator.SetTrigger("Shot");
+            attDelta = 0;
         }
+        attGauge.fillAmount = attDelta / (1 / attSpeed);
     }
 
     public void CreateBullet(float dmg, float ang)
@@ -255,6 +265,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             selectItemPanel.SetActive(true);
     }
 
+    public void ClearAttackEvent() => OnPlayerAttack = null;
+
     [PunRPC]
     public void Respawn()
     {
@@ -271,4 +283,5 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
         }
     }
+
 }

@@ -27,7 +27,7 @@ public class ItemManager : MonoBehaviour
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int actorNum = 0;
-        //Á×Àº ÇÃ·¹ÀÌ¾î¸¦ °Ë»öÇØ¼­ ±× ÇÃ·¹ÀÌ¾î°¡ ¾ÆÀÌÅÛ ¼±ÅÃ
+        //ì£½ì€ í”Œë ˆì´ì–´ë¥¼ ê²€ìƒ‰í•´ì„œ ê·¸ í”Œë ˆì´ì–´ê°€ ì•„ì´í…œ ì„ íƒ
         foreach (var player in players)
         {
             if (player.GetComponent<PlayerCtrl>().isDead == true)
@@ -52,29 +52,7 @@ public class ItemManager : MonoBehaviour
                 //pv.RPC(nameof(GetItem), RpcTarget.AllBuffered, actorNum, itemName);
             });
         }
-
-        //foreach (var btn in selectBtn)
-        //{
-        //    btn.onClick.RemoveAllListeners();
-        //    foreach (var item in tempItemList)
-        //    {
-        //        btn.GetComponentInChildren<Text>().text = item;
-        //        btn.onClick.AddListener(() =>
-        //        {
-        //            pv.RPC(nameof(GetItem), RpcTarget.AllBuffered, actorNum, item);
-        //        });
-        //    }
-        //}
     }
-
-    //[PunRPC]
-    //public void GetItem(int actorNum, string itemName)
-    //{
-    //    Debug.LogError("¾ÆÀÌÅÛ È¹µæ");
-
-
-
-    //}
 
     private List<string> GetRandomItemNames()
     {
@@ -84,14 +62,14 @@ public class ItemManager : MonoBehaviour
         {
             if (tempItemList.Count == 0)
             {
-                tempItemList.Add(itemChart[Random.Range(0, 3)]["ItemName"].ToString());
+                tempItemList.Add(itemChart[Random.Range(0, 4)]["ItemName"].ToString());
             }
             else
             {
 
                 while (true)
                 {
-                    rand = Random.Range(0, 4); /////////////////////////
+                    rand = Random.Range(0, 4);
                     bool notEqual = true;
                     for (int i = 0; i < tempItemList.Count; i++)
                     {
