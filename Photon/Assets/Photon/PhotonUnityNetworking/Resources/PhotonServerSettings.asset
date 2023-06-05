@@ -44,6 +44,26 @@ MonoBehaviour:
   - DirRPC
   - DestroyRPC
   - SelectItems
+  - AddItem
+  - OnGetItem
+  - InitialPlayerProps
+  - PlayerDeath
+  - Respawn
+  - TakeDamage
+  - SetDamage
+  - GetRandomItems
+  - SetActorNum
+  - SetAngle
+  - FireBulletFlipX
+  - SetGunAngle
+  - InitialEvents
+  - RemoveItem
+  - GetItem
+  - SetIsInvincible
+  - SetIsProtected
+  - ShieldOff
+  - SetOwner
+  - InitShield
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

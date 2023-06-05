@@ -16,7 +16,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
-        PhotonNetwork.SerializationRate = 30;
+        PhotonNetwork.SerializationRate = 60;
     }
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
@@ -38,8 +38,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected)
             PhotonNetwork.Disconnect();
-
-        Debug.Log(PhotonNetwork.IsConnected);
     }
 
     public override void OnDisconnected(DisconnectCause cause)

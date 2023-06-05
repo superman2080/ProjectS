@@ -7,18 +7,19 @@ using Photon.Pun;
 public class BulletCtrl : MonoBehaviourPunCallbacks
 {
     public PhotonView pv;
-    int dir;
+    public float damage;
 
     // Start is called before the first frame update
     void Start()
     {
+        pv = gameObject.GetComponent<PhotonView>();
         Destroy(gameObject, 3.5f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.right * 7 * Time.deltaTime * dir);
+        transform.Translate(Vector3.left * 7 * Time.deltaTime);
     }
 
 
@@ -28,13 +29,16 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
             pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         if(!pv.IsMine && collision.tag == "Player" && collision.GetComponent<PhotonView>().IsMine)
         {
-            collision.GetComponent<PlayerCtrl>().TakeDamage();
+            collision.GetComponent<PlayerCtrl>().pv.RPC(nameof(PlayerCtrl.TakeDamage), RpcTarget.AllBuffered, damage);
             pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         }
     }
     [PunRPC]
-    public void DirRPC(int dir) => this.dir = dir;
+    public void SetAngle(float ang) => transform.eulerAngles = new Vector3(0, 0, ang);
 
     [PunRPC]
-    void DestroyRPC() => Destroy(gameObject);
+    public void DestroyRPC() => Destroy(gameObject);
+
+    [PunRPC]
+    public void SetDamage(float damage) => this.damage = damage;
 }
