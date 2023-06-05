@@ -43,7 +43,7 @@ public class ItemManager : MonoBehaviour
         {
             selectBtn[i].onClick.RemoveAllListeners();
             selectBtn[i].GetComponentInChildren<Text>().text = tempItemList[i];
-            string itemName = "ShotGun";
+            string itemName = tempItemList[i];
             selectBtn[i].onClick.AddListener(() =>
             {
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
@@ -62,14 +62,14 @@ public class ItemManager : MonoBehaviour
         {
             if (tempItemList.Count == 0)
             {
-                tempItemList.Add(itemChart[Random.Range(0, 3)]["ItemName"].ToString());
+                tempItemList.Add(itemChart[Random.Range(0, 4)]["ItemName"].ToString());
             }
             else
             {
 
                 while (true)
                 {
-                    rand = Random.Range(0, 3);
+                    rand = Random.Range(0, 4);
                     bool notEqual = true;
                     for (int i = 0; i < tempItemList.Count; i++)
                     {
