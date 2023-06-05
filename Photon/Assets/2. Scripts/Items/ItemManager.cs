@@ -62,14 +62,14 @@ public class ItemManager : MonoBehaviour
         {
             if (tempItemList.Count == 0)
             {
-                tempItemList.Add(itemChart[Random.Range(0, 4)]["ItemName"].ToString());
+                tempItemList.Add(itemChart[Random.Range(0, 5)]["ItemName"].ToString());
             }
             else
             {
 
                 while (true)
                 {
-                    rand = Random.Range(0, 4);
+                    rand = Random.Range(0, 5);
                     bool notEqual = true;
                     for (int i = 0; i < tempItemList.Count; i++)
                     {

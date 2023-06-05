@@ -69,4 +69,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
   pv: {fileID: 385198685089537508}
-  size: 0.709
+  size: 0.7
