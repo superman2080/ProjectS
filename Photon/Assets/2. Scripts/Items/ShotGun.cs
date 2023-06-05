@@ -6,6 +6,7 @@ using Photon.Pun;
 
 public class ShotGun : ItemCtrl
 {
+    public float attSpeed;
     [Range(2, 5)]
     public int bulletNum;
     [Range(3, 7)]
@@ -24,6 +25,7 @@ public class ShotGun : ItemCtrl
     public override void OnGetItem(int actorNum)
     {
         base.OnGetItem(actorNum);
+        owner.attSpeed = attSpeed;
         owner.ClearAttackEvent();
         owner.OnPlayerAttack += ItemEvent;
     }

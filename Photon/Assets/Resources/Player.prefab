@@ -241,12 +241,14 @@ MonoBehaviour:
   gunSprite: {fileID: 2965434679474030247}
   gunTr: {fileID: 8586936884319439134}
   hpBar: {fileID: 5429874585534844754}
+  attGauge: {fileID: 0}
   damage: 10
   maxHp: 100
   hp: 100
   speed: 4
   isInvincible: 0
   gunAngle: 0
+  attSpeed: 2
   itemTr: {fileID: 1238188240433673599}
   itemList: []
   actorNum: 0
@@ -553,8 +555,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -944062523
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1a2fe29ada2cddc46a3ce0e4b67a819f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
