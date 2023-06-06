@@ -12,6 +12,7 @@ public class ShotGun : ItemCtrl
     [Range(3, 7)]
     public int interval;
     public EventHandler ShotGunEvent;
+    public string spriteName;
 
     public override void ItemEffect()
     {
@@ -26,6 +27,7 @@ public class ShotGun : ItemCtrl
     {
         base.OnGetItem(actorNum);
         owner.attSpeed = attSpeed;
+        owner.pv.RPC(nameof(PlayerCtrl.SetGunSprite), RpcTarget.AllBuffered, spriteName);
         owner.ClearAttackEvent();
         owner.OnPlayerAttack += ItemEvent;
     }

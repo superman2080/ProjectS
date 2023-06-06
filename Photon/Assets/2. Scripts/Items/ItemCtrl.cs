@@ -4,9 +4,10 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 
+[RequireComponent(typeof(PhotonView))]
 public abstract class ItemCtrl : MonoBehaviourPunCallbacks
 {
-    public PlayerCtrl owner;
+    protected PlayerCtrl owner;
     public PhotonView pv;
     public EventHandler ItemEvent;
     private void Start()

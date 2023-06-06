@@ -20,6 +20,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public Transform gunTr;
     public Image hpBar;
     public Image attGauge;
+    public Image gunUIImage;
 
     [Header("Related to attack")]
     public float damage;
@@ -89,6 +90,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         selectItemPanel.SetActive(false);
         attGauge = GameObject.Find("Canvas").transform.Find("IngameUI").Find("AttackGauge").GetComponent<Image>();
+        gunUIImage = attGauge.transform.Find("GunUIImage").GetComponent<Image>();
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
         //이벤트 처리 부분
@@ -251,6 +253,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     [PunRPC]
     public void SetIsInvincible(bool b) => isInvincible = b;
+
+    [PunRPC]
+    public void SetGunSprite(string name)
+    {
+        Sprite gunResource = Resources.Load<Sprite>("Sprites/" + name);
+        gunUIImage.sprite = gunResource;
+        gunSprite.sprite = gunResource;
+    }
 
     [PunRPC]
     public void PlayerDeath()

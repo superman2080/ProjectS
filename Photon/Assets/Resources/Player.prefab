@@ -242,6 +242,7 @@ MonoBehaviour:
   gunTr: {fileID: 8586936884319439134}
   hpBar: {fileID: 5429874585534844754}
   attGauge: {fileID: 0}
+  gunUIImage: {fileID: 0}
   damage: 10
   maxHp: 100
   hp: 100
@@ -496,7 +497,7 @@ GameObject:
   - component: {fileID: 1396922352915389645}
   - component: {fileID: 2965434679474030247}
   m_Layer: 0
-  m_Name: ProShc
+  m_Name: GunImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
