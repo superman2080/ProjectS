@@ -19,8 +19,6 @@ public class SizeDown : ItemCtrl
         //collider.size = new Vector3(size, size, 1f);
         //owner.spriteRenderer.transform.localScale = new Vector3(size, size, 1f);
         //owner.transform.Find("GunTr").transform.localScale = new Vector3(size, size, 1);
-
-
     }
 
     [PunRPC]

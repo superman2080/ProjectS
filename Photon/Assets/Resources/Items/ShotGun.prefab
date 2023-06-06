@@ -45,11 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5daadd8cee047db4fb44e6927cfd08af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
   pv: {fileID: 7451955209536098212}
   attSpeed: 0.5
   bulletNum: 4
   interval: 5
+  spriteName: ShotGun
 --- !u!114 &7451955209536098212
 MonoBehaviour:
   m_ObjectHideFlags: 0
