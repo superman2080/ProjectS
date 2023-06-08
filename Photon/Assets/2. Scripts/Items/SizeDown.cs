@@ -20,11 +20,6 @@ public class SizeDown : ItemCtrl
         //owner.spriteRenderer.transform.localScale = new Vector3(size, size, 1f);
         //owner.transform.Find("GunTr").transform.localScale = new Vector3(size, size, 1);
 
-        owner.transform.localScale = new Vector3(size, size, 1f);
-
-        canvas = owner.transform.Find("Canvas");
-        canvas.transform.localScale = new Vector3(1f, 1f, 1f) * 1 / size;
-        canvas.transform.position += new Vector3(0f, 0.134f, 0f);
 
     }
 
@@ -32,7 +27,10 @@ public class SizeDown : ItemCtrl
     public override void OnGetItem(int actorNum)
     {
         base.OnGetItem(actorNum);
+        owner.transform.localScale = Vector3.one * size;
 
-        owner.OnSpawnPlayer += ItemEvent;
+        canvas = owner.transform.Find("Canvas");
+        canvas.transform.localScale = Vector3.one / size;
+        canvas.transform.position += new Vector3(0f, 0.134f, 0f);
     }
 }
