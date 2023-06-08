@@ -1,0 +1,99 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
+
+public class Ghost : ItemCtrl
+{
+    /* 마우스 휠 클릭 시
+     상대방에게 자신은 불투명하게, 닉네임과 체력바, 보호막은 투명하게
+     자신에게 자신은 덜 불투명하게, UI는 그대로 */
+
+    private SpriteRenderer[] srList = new SpriteRenderer[2];
+
+    [Range(0f, 0.6f)]
+    public float transparency;
+    private Color color;
+
+    [Range(3f, 10f)]
+    public float ghostDuration;
+    private float ghostStartTime;
+
+    private bool isUsed;
+    private bool isDead;
+    private bool isEnded;
+
+
+    public override void ItemEffect()
+    {
+        GameObject gunSr = (owner.transform.Find("GunTr")).transform.Find("ProShc").gameObject;
+
+        srList[0] = owner.GetComponent<SpriteRenderer>();
+        srList[1] = gunSr.GetComponent<SpriteRenderer>();
+        isUsed = false;
+        isEnded = false;
+    }
+
+    void Update()
+    {
+        isDead = owner.isDead;
+        StartCoroutine(OnBecameGhostCor());
+    }
+
+    [PunRPC]
+    public void OnBecameGhost()
+    {
+        transparency = pv.IsMine ? 0.7f : transparency;
+        color = new Color(1f, 1f, 1f, transparency);
+        foreach (SpriteRenderer sr in srList) sr.color = color;
+
+        if (!pv.IsMine) owner.transform.Find("Canvas").gameObject.SetActive(false);       
+    }
+
+    [PunRPC]
+    public void OnRespawn()
+    {
+        color.a = 1f;
+        foreach (SpriteRenderer sr in srList) sr.color = color;
+    }
+
+    [PunRPC]
+    public void OnTimeOut()
+    {
+        color.a = 1f;
+        foreach (SpriteRenderer sr in srList) sr.color = color;
+        owner.transform.Find("Canvas").gameObject.SetActive(true);
+    }
+
+    private IEnumerator OnBecameGhostCor()
+    {
+        yield return null;
+
+        if (!isUsed){
+            if (pv.IsMine && Input.GetMouseButtonDown(2)) //마우스휠
+            {
+                ghostStartTime = Time.time;
+                pv.RPC(nameof(OnBecameGhost), RpcTarget.AllBuffered);
+                isUsed = true;
+            }
+        }
+        else{
+            if (!isEnded){
+                if (Time.time - ghostStartTime >= ghostDuration){
+                    pv.RPC(nameof(OnTimeOut), RpcTarget.AllBuffered);
+                    isEnded = true;   }
+                else if (isDead) {
+                    pv.RPC(nameof(OnRespawn), RpcTarget.AllBuffered);
+                    isEnded = true;   }
+            }
+        }
+    }
+
+    [PunRPC]
+    public override void OnGetItem(int actorNum)
+    {
+        base.OnGetItem(actorNum);
+
+        owner.OnSpawnPlayer += ItemEvent;
+    }
+}
