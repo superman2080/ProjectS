@@ -9,12 +9,13 @@ public class Busuker : ItemCtrl
 {
 
 
-
-    [Range(1f, 2f)]
+    [Header("Busuker increase magnitude")]
+    [Range(1f, 3f)]
     public float magnitude;
  
     private float originDamage;
     private float originSpeed;
+
     public override void ItemEffect()
     {
         StartCoroutine(BusukerEffect());
@@ -23,8 +24,8 @@ public class Busuker : ItemCtrl
     private IEnumerator BusukerEffect()
     {
         yield return null;
-        owner.speed = originSpeed * (1 - (owner.hp / owner.maxHp) + magnitude);
-        owner.damage = originDamage * (1 - (owner.hp / owner.maxHp) + magnitude);
+        owner.speed = originSpeed + ((1 - (owner.hp / owner.maxHp)) * (magnitude - 1) * originSpeed);
+        owner.damage = originDamage + ((1 - (owner.hp / owner.maxHp)) * (magnitude - 1) * originDamage);
 
         if (owner.hp <= 0)
         {

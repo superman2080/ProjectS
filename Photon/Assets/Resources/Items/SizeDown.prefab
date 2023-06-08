@@ -67,6 +67,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01f3f24c19b23964d9f581d5297f443b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
   pv: {fileID: 385198685089537508}
   size: 0.7
