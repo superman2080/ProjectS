@@ -6,20 +6,12 @@ using Photon.Pun;
 public class SizeDown : ItemCtrl
 {
     private Transform canvas;
-    //private CapsuleCollider2D collider;
-    //static bool isMediateY = false;
 
     [Range(0.6f, 0.8f)]
     public float size;
 
     public override void ItemEffect()
     {
-        //collider = owner.GetComponent<CapsuleCollider2D>();
-
-        //collider.size = new Vector3(size, size, 1f);
-        //owner.spriteRenderer.transform.localScale = new Vector3(size, size, 1f);
-        //owner.transform.Find("GunTr").transform.localScale = new Vector3(size, size, 1);
-
 
     }
 
