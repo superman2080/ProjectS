@@ -10,6 +10,7 @@ public class Ghost : ItemCtrl
      자신에게 자신은 덜 불투명하게, UI는 그대로 */
 
     private SpriteRenderer[] srList = new SpriteRenderer[2];
+    private SpriteRenderer shieldSr = new SpriteRenderer();
 
     [Range(0f, 0.6f)]
     public float transparency;
@@ -22,6 +23,7 @@ public class Ghost : ItemCtrl
     private bool isUsed;
     private bool isDead;
     private bool isEnded;
+    private bool hasShield;
 
 
     public override void ItemEffect()
@@ -32,6 +34,7 @@ public class Ghost : ItemCtrl
         srList[1] = gunSr.GetComponent<SpriteRenderer>();
         isUsed = false;
         isEnded = false;
+        hasShield = (owner.transform.Find("ItemTr")).transform.Find("Shield(Clone)");
     }
 
     void Update()
@@ -43,11 +46,20 @@ public class Ghost : ItemCtrl
     [PunRPC]
     public void OnBecameGhost()
     {
-        transparency = pv.IsMine ? 0.7f : transparency;
+        transparency = pv.IsMine ? 0.6f : transparency;
         color = new Color(1f, 1f, 1f, transparency);
         foreach (SpriteRenderer sr in srList) sr.color = color;
 
-        if (!pv.IsMine) owner.transform.Find("Canvas").gameObject.SetActive(false);       
+        if (!pv.IsMine) owner.transform.Find("Canvas").gameObject.SetActive(false);
+        
+        if (hasShield)
+        {
+            GameObject shield = (owner.transform.Find("ItemTr")).transform.Find("Shield(Clone)").gameObject;
+            shieldSr = shield.GetComponent<SpriteRenderer>();
+            Debug.Log("왜안돼");
+            if (!pv.IsMine) shieldSr.color = new Color(1f, 1f, 1f, 0f);
+        }
+            
     }
 
     [PunRPC]
@@ -55,6 +67,8 @@ public class Ghost : ItemCtrl
     {
         color.a = 1f;
         foreach (SpriteRenderer sr in srList) sr.color = color;
+        if (hasShield)
+            shieldSr.color = new Color(1f, 1f, 1f, 1f);
     }
 
     [PunRPC]
@@ -63,6 +77,8 @@ public class Ghost : ItemCtrl
         color.a = 1f;
         foreach (SpriteRenderer sr in srList) sr.color = color;
         owner.transform.Find("Canvas").gameObject.SetActive(true);
+        if (hasShield)
+            shieldSr.color = new Color(1f, 1f, 1f, 1f);
     }
 
     private IEnumerator OnBecameGhostCor()
