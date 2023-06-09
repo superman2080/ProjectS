@@ -6,13 +6,13 @@ using Photon.Pun;
 public class Ghost : ItemCtrl
 {
     /* 마우스 휠 클릭 시
-     상대방에게 자신은 불투명하게, 닉네임과 체력바, 보호막은 투명하게
-     자신에게 자신은 덜 불투명하게, UI는 그대로 */
+     상대방에게 자신과 자신의 닉네임,체력바, 보호막은 투명하게
+     자신에게 자신은 반투명하게, UI는 그대로 */
 
     private SpriteRenderer[] srList = new SpriteRenderer[2];
     private SpriteRenderer shieldSr = new SpriteRenderer();
 
-    [Range(0f, 0.6f)]
+    [Range(0f, 0.5f)]
     public float transparency;
     private Color color;
 
@@ -46,17 +46,16 @@ public class Ghost : ItemCtrl
     [PunRPC]
     public void OnBecameGhost()
     {
-        transparency = pv.IsMine ? 0.6f : transparency;
+        transparency = pv.IsMine ? 0.5f : transparency;
         color = new Color(1f, 1f, 1f, transparency);
         foreach (SpriteRenderer sr in srList) sr.color = color;
 
         if (!pv.IsMine) owner.transform.Find("Canvas").gameObject.SetActive(false);
-        
+
         if (hasShield)
         {
             GameObject shield = (owner.transform.Find("ItemTr")).transform.Find("Shield(Clone)").gameObject;
             shieldSr = shield.GetComponent<SpriteRenderer>();
-            Debug.Log("왜안돼");
             if (!pv.IsMine) shieldSr.color = new Color(1f, 1f, 1f, 0f);
         }
             
