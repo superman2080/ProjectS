@@ -6,12 +6,13 @@ using Photon.Pun;
 public class Ghost : ItemCtrl
 {
     /* 마우스 휠 클릭 시
-     상대방에게 자신은 불투명하게, 닉네임과 체력바, 보호막은 투명하게
-     자신에게 자신은 덜 불투명하게, UI는 그대로 */
+     상대방에게 자신과 자신의 닉네임,체력바, 보호막은 투명하게
+     자신에게 자신은 반투명하게, UI는 그대로 */
 
     private SpriteRenderer[] srList = new SpriteRenderer[2];
+    private SpriteRenderer shieldSr = new SpriteRenderer();
 
-    [Range(0f, 0.6f)]
+    [Range(0f, 0.5f)]
     public float transparency;
     private Color color;
 
@@ -22,6 +23,7 @@ public class Ghost : ItemCtrl
     private bool isUsed;
     private bool isDead;
     private bool isEnded;
+    private bool hasShield;
 
 
     public override void ItemEffect()
@@ -32,6 +34,7 @@ public class Ghost : ItemCtrl
         srList[1] = gunSr.GetComponent<SpriteRenderer>();
         isUsed = false;
         isEnded = false;
+        hasShield = (owner.transform.Find("ItemTr")).transform.Find("Shield(Clone)");
     }
 
     void Update()
@@ -43,11 +46,19 @@ public class Ghost : ItemCtrl
     [PunRPC]
     public void OnBecameGhost()
     {
-        transparency = pv.IsMine ? 0.7f : transparency;
+        transparency = pv.IsMine ? 0.5f : transparency;
         color = new Color(1f, 1f, 1f, transparency);
         foreach (SpriteRenderer sr in srList) sr.color = color;
 
-        if (!pv.IsMine) owner.transform.Find("Canvas").gameObject.SetActive(false);       
+        if (!pv.IsMine) owner.transform.Find("Canvas").gameObject.SetActive(false);
+
+        if (hasShield)
+        {
+            GameObject shield = (owner.transform.Find("ItemTr")).transform.Find("Shield(Clone)").gameObject;
+            shieldSr = shield.GetComponent<SpriteRenderer>();
+            if (!pv.IsMine) shieldSr.color = new Color(1f, 1f, 1f, 0f);
+        }
+            
     }
 
     [PunRPC]
@@ -55,6 +66,8 @@ public class Ghost : ItemCtrl
     {
         color.a = 1f;
         foreach (SpriteRenderer sr in srList) sr.color = color;
+        if (hasShield)
+            shieldSr.color = new Color(1f, 1f, 1f, 1f);
     }
 
     [PunRPC]
@@ -63,6 +76,8 @@ public class Ghost : ItemCtrl
         color.a = 1f;
         foreach (SpriteRenderer sr in srList) sr.color = color;
         owner.transform.Find("Canvas").gameObject.SetActive(true);
+        if (hasShield)
+            shieldSr.color = new Color(1f, 1f, 1f, 1f);
     }
 
     private IEnumerator OnBecameGhostCor()
