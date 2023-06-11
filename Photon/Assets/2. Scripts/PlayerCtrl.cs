@@ -13,6 +13,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [Header("Related to appearance")]
     public Animator animator;
     public SpriteRenderer spriteRenderer;
+
     public PhotonView pv;
     public Text nicknameText;
     public GameObject selectItemPanel;
@@ -201,7 +202,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.GetMouseButtonDown(0) && attDelta >= 1 / attSpeed)
         {
             OnPlayerAttack?.Invoke(this, EventArgs.Empty);
-            animator.SetTrigger("Shot");
+            //animator.SetTrigger("Shot");
             attDelta = 0;
         }
         attGauge.fillAmount = attDelta / (1 / attSpeed);
@@ -216,13 +217,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     void FlipXRPC(float axis)
     {
-        spriteRenderer.flipX = axis == -1;
-        gunTr.transform.localScale = new Vector3(axis, 1, 1);
+        spriteRenderer.flipX = axis == 1; // -1;
+        gunTr.transform.localScale = new Vector3(-axis, -1, 1);
         gunTr.transform.localPosition = new Vector3(-Mathf.Cos(gunAngle * Mathf.Deg2Rad) * 0.5f, -Mathf.Sin(gunAngle * Mathf.Deg2Rad) * 0.25f, 0);
     }
 
     void SetGunAngle(float ang)
     {
+        //gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
         gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
     }
 
