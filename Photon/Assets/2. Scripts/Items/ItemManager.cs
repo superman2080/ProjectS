@@ -43,7 +43,7 @@ public class ItemManager : MonoBehaviour
         {
             selectBtn[i].onClick.RemoveAllListeners();
             selectBtn[i].GetComponentInChildren<Text>().text = tempItemList[i];
-            string itemName = "LaserShot";
+            string itemName = tempItemList[i];
             selectBtn[i].onClick.AddListener(() =>
             {
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
