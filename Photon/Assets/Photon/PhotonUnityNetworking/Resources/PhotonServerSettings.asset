@@ -68,6 +68,11 @@ MonoBehaviour:
   - WeaponBehavior
   - SetGunSprite
   - LaserShotRPC
+  - OnBecameGhost
+  - OnBecameGhostCor
+  - BecameGhost
+  - OnRespawn
+  - OnTimeOut
   - DrawLaser
   - SetLaserScale
   - RemoveLaser
