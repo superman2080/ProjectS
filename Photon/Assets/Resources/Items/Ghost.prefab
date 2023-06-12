@@ -67,7 +67,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84f0ff3ecbdf7074a84ac173361cf290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
   pv: {fileID: 385198685089537508}
   transparency: 0.28
   ghostDuration: 5.6

@@ -103,10 +103,4 @@ public class LaserShot : ItemCtrl
         owner.ClearAttackEvent();
         owner.OnPlayerAttack += ItemEvent;
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(debugCenter, debugSize);
-    }
 }

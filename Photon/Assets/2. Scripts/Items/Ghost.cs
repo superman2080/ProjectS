@@ -28,10 +28,10 @@ public class Ghost : ItemCtrl
 
     public override void ItemEffect()
     {
-        GameObject gunSr = (owner.transform.Find("GunTr")).transform.Find("ProShc").gameObject;
+        //GameObject gunSr = (owner.transform.Find("GunTr")).transform.Find("ProShc").gameObject;
 
         srList[0] = owner.GetComponent<SpriteRenderer>();
-        srList[1] = gunSr.GetComponent<SpriteRenderer>();
+        srList[1] = owner.gunSprite.GetComponent<SpriteRenderer>();
         isUsed = false;
         isEnded = false;
         hasShield = (owner.transform.Find("ItemTr")).transform.Find("Shield(Clone)");
