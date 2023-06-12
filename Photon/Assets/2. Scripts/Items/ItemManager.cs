@@ -43,7 +43,7 @@ public class ItemManager : MonoBehaviour
         {
             selectBtn[i].onClick.RemoveAllListeners();
             selectBtn[i].GetComponentInChildren<Text>().text = tempItemList[i];
-            string itemName = tempItemList[i];
+            string itemName = "LaserShot";
             selectBtn[i].onClick.AddListener(() =>
             {
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
@@ -60,31 +60,32 @@ public class ItemManager : MonoBehaviour
         List<string> tempItemList = new List<string>();
         while (tempItemList.Count < 3)
         {
-            if (tempItemList.Count == 0)
+            while (true)
             {
-                tempItemList.Add(itemChart[Random.Range(0, 6)]["ItemName"].ToString()); //////////////
-            }
-            else
-            {
-
-                while (true)
+                rand = Random.Range(0, 9);
+                bool notEqual = true;
+                foreach (var it in owner.itemList)
                 {
-                    rand = Random.Range(0, 6);//////////////////
-                    bool notEqual = true;
-                    for (int i = 0; i < tempItemList.Count; i++)
+                    Debug.LogError(it.name + it.name.Contains(itemChart[rand]["ItemName"].ToString()));
+                    if (it.name.Contains(itemChart[rand]["ItemName"].ToString()))
                     {
-                        if (tempItemList[i] == itemChart[rand]["ItemName"].ToString())
-                        {
-                            notEqual = false;
-                            break;
-                        }
-
-                    }
-                    if (notEqual == true)
+                        notEqual = false;
                         break;
+                    }
                 }
-                tempItemList.Add(itemChart[rand]["ItemName"].ToString());
+                for (int i = 0; i < tempItemList.Count; i++)
+                {
+                    if (tempItemList[i] == itemChart[rand]["ItemName"].ToString())
+                    {
+                        notEqual = false;
+                        break;
+                    }
+
+                }
+                if (notEqual == true)
+                    break;
             }
+            tempItemList.Add(itemChart[rand]["ItemName"].ToString());
         }
         return tempItemList;
     }

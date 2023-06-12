@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System;
 
 public class BulletCtrl : MonoBehaviourPunCallbacks
 {
     public PhotonView pv;
     public float damage;
+    public event EventHandler OnBulletHit;
 
     // Start is called before the first frame update
     void Start()
@@ -24,10 +26,14 @@ public class BulletCtrl : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Ground")
-            pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
-        if(!pv.IsMine && collision.tag == "Player" && collision.GetComponent<PhotonView>().IsMine)
+        if (collision.CompareTag("Ground"))
         {
+            OnBulletHit?.Invoke(this, EventArgs.Empty);
+            pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
+        }
+        if (!pv.IsMine && collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && !collision.CompareTag("Bullet"))
+        {
+            OnBulletHit?.Invoke(this, EventArgs.Empty);
             collision.GetComponent<PlayerCtrl>().pv.RPC(nameof(PlayerCtrl.TakeDamage), RpcTarget.AllBuffered, damage);
             pv.RPC(nameof(DestroyRPC), RpcTarget.AllBuffered);
         }

@@ -12,6 +12,11 @@ public class SizeDown : ItemCtrl
 
     public override void ItemEffect()
     {
+        //collider = owner.GetComponent<CapsuleCollider2D>();
+
+        //collider.size = new Vector3(size, size, 1f);
+        //owner.spriteRenderer.transform.localScale = new Vector3(size, size, 1f);
+        //owner.transform.Find("GunTr").transform.localScale = new Vector3(size, size, 1);
 
     }
 

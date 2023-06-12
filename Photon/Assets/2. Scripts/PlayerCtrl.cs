@@ -13,6 +13,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [Header("Related to appearance")]
     public Animator animator;
     public SpriteRenderer spriteRenderer;
+
     public PhotonView pv;
     public Text nicknameText;
     public GameObject selectItemPanel;
@@ -20,6 +21,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public Transform gunTr;
     public Image hpBar;
     public Image attGauge;
+    public Image gunUIImage;
 
     [Header("Related to attack")]
     public float damage;
@@ -89,6 +91,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         selectItemPanel.SetActive(false);
         attGauge = GameObject.Find("Canvas").transform.Find("IngameUI").Find("AttackGauge").GetComponent<Image>();
+        gunUIImage = attGauge.transform.Find("GunUIImage").GetComponent<Image>();
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
         //이벤트 처리 부분
@@ -199,7 +202,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.GetMouseButtonDown(0) && attDelta >= 1 / attSpeed)
         {
             OnPlayerAttack?.Invoke(this, EventArgs.Empty);
-            animator.SetTrigger("Shot");
+            //animator.SetTrigger("Shot");
             attDelta = 0;
         }
         attGauge.fillAmount = attDelta / (1 / attSpeed);
@@ -214,13 +217,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     void FlipXRPC(float axis)
     {
-        spriteRenderer.flipX = axis == -1;
-        gunTr.transform.localScale = new Vector3(axis, 1, 1);
+        spriteRenderer.flipX = axis == 1; // -1;
+        gunTr.transform.localScale = new Vector3(-axis, -1, 1);
         gunTr.transform.localPosition = new Vector3(-Mathf.Cos(gunAngle * Mathf.Deg2Rad) * 0.5f, -Mathf.Sin(gunAngle * Mathf.Deg2Rad) * 0.25f, 0);
     }
 
     void SetGunAngle(float ang)
     {
+        //gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
         gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
     }
 
@@ -251,6 +255,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     [PunRPC]
     public void SetIsInvincible(bool b) => isInvincible = b;
+
+    [PunRPC]
+    public void SetGunSprite(string name)
+    {
+        Sprite gunResource = Resources.Load<Sprite>("Sprites/" + name);
+        gunUIImage.sprite = gunResource;
+        gunSprite.sprite = gunResource;
+    }
 
     [PunRPC]
     public void PlayerDeath()

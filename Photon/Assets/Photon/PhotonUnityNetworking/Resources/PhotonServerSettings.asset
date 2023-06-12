@@ -66,6 +66,8 @@ MonoBehaviour:
   - InitShield
   - InitialWeapon
   - WeaponBehavior
+  - SetGunSprite
+  - LaserShotRPC
   - OnBecameGhost
   - OnBecameGhostCor
   - BecameGhost

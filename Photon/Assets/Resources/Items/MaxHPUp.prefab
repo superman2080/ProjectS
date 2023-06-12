@@ -67,6 +67,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33adb7bdb6f92954798189844b838ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
   pv: {fileID: 1859291759275911990}
   maxHP: 150
