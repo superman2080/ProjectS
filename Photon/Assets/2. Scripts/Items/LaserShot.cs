@@ -48,7 +48,6 @@ public class LaserShot : ItemCtrl
         Collider2D[] players = Physics2D.OverlapBoxAll(debugCenter, debugSize, owner.gunAngle);
         foreach (var player in players)
         {
-            Debug.LogError(player.name);
             if(player.gameObject != owner.gameObject && player.gameObject.CompareTag("Player"))
             {
                 player.GetComponent<PlayerCtrl>().pv.RPC(nameof(PlayerCtrl.TakeDamage), RpcTarget.AllBuffered, owner.damage);
