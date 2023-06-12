@@ -70,8 +70,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pv: {fileID: 6718972632264503084}
+  keepLaserTime: 0.25
   magnitude: 10
   lineRenderer: {fileID: 3658785687375283520}
+  laserWidth: 0.4
 --- !u!114 &6718972632264503084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,7 +116,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -137,39 +139,30 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.4
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.25
-        inSlope: 2.2089117
-        outSlope: 2.2089117
+        value: 0
+        inSlope: -0.047493115
+        outSlope: -0.047493115
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0.110119045
-      - serializedVersion: 3
-        time: 0.8333203
-        value: 1
-        inSlope: -0.006304549
-        outSlope: -0.006304549
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.10416669
-        outWeight: 0.33333334
+        outWeight: 0.16389535
       - serializedVersion: 3
         time: 1
-        value: 0
-        inSlope: -18.616213
-        outSlope: -18.616213
+        value: 0.9774769
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.15625013
+        inWeight: 0
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -203,8 +196,8 @@ LineRenderer:
       m_Mode: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 3
+    numCapVertices: 3
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
