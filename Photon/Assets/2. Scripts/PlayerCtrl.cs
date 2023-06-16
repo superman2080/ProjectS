@@ -7,6 +7,11 @@ using UnityEngine.UI;
 using Cinemachine;
 using System;
 
+public class DamageEventArgs : EventArgs
+{
+    public float damage;
+}
+
 public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 {
     public Rigidbody2D rb;
@@ -45,7 +50,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public List<ItemCtrl> itemList = new List<ItemCtrl>();
     public event EventHandler OnSpawnPlayer;
     public event EventHandler OnPlayerAttack;
-    public event EventHandler OnPlayerJump;
+    public event EventHandler OnUseSkill;
     public event EventHandler OnTakenDamage;
     public EventHandler DefaultAttack;
 
@@ -53,7 +58,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public int actorNum;
     [HideInInspector]
     public bool isDead = false;
-    private bool isGround;
+    private int groundCnt;
     private Vector3 curPos;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -157,11 +162,27 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         //
 
         //바닥 체크, 점프
-        isGround = Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(0, -0.5f), 0.1f, 1 << LayerMask.NameToLayer("Ground"));
-        animator.SetBool("Jump", !isGround);
-        if (Input.GetKeyDown(KeyCode.Space) && isGround) pv.RPC(nameof(JumpRPC), RpcTarget.All);
+        if (Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(0, -0.5f), 0.1f, 1 << LayerMask.NameToLayer("Ground")) != null && rb.velocity.y < 0)
+        {
+            animator.SetBool("Jump", false);
+            groundCnt = 2;
+        }
+        else
+        {
+            animator.SetBool("Jump", true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && groundCnt > 0)
+        {
+            groundCnt--;
+            pv.RPC(nameof(JumpRPC), RpcTarget.All);
+        }
         //
 
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            OnUseSkill?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     void PlayerAttack()
@@ -232,13 +253,19 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void JumpRPC()
     {
         rb.velocity = Vector2.zero;
-        rb.AddForce(Vector2.up * 700);
+        rb.AddForce(Vector2.up * 500);
+
     }
 
     [PunRPC]
     public void TakeDamage(float dmg)
     {
-        OnTakenDamage?.Invoke(this, EventArgs.Empty);
+        if(OnTakenDamage != null)
+        {
+            DamageEventArgs args = new DamageEventArgs();
+            args.damage = dmg;
+            OnTakenDamage(this, args);
+        }
         if (!isInvincible)
             hp -= dmg;
         hpBar.fillAmount = hp / maxHp;
@@ -260,8 +287,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public void SetGunSprite(string name)
     {
         Sprite gunResource = Resources.Load<Sprite>("Sprites/" + name);
-        gunUIImage.sprite = gunResource;
         gunSprite.sprite = gunResource;
+        if (pv.IsMine)
+            gunUIImage.sprite = gunResource;
     }
 
     [PunRPC]
@@ -294,6 +322,12 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             selectItemPanel.SetActive(false);
             transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere((Vector2)transform.position + new Vector2(0, -0.5f), 0.1f);
     }
 
 }
