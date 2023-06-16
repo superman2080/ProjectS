@@ -70,10 +70,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pv: {fileID: 6718972632264503084}
+  attSpeed: 10
   keepLaserTime: 0.25
   magnitude: 10
   lineRenderer: {fileID: 3658785687375283520}
   laserWidth: 0.4
+  spriteName: LaserShot
 --- !u!114 &6718972632264503084
 MonoBehaviour:
   m_ObjectHideFlags: 0

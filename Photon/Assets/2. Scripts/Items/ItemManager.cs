@@ -9,6 +9,8 @@ public class ItemManager : MonoBehaviour
 {
     public Button[] selectBtn = new Button[3];
     public PhotonView pv;
+    [Header("For Debug item list(max 3)\nPut right place string if you want item debug (or leave empty)")]
+    public string[] debugItemList = new string[3];
     private PlayerCtrl owner;
     private List<Dictionary<string, object>> itemChart;
 
@@ -44,6 +46,9 @@ public class ItemManager : MonoBehaviour
             selectBtn[i].onClick.RemoveAllListeners();
             selectBtn[i].GetComponentInChildren<Text>().text = tempItemList[i];
             string itemName = tempItemList[i];
+            if (string.IsNullOrEmpty(debugItemList[i]) == false)
+                itemName = debugItemList[i];
+                
             selectBtn[i].onClick.AddListener(() =>
             {
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();

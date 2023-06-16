@@ -3251,6 +3251,10 @@ MonoBehaviour:
   - {fileID: 1012739177}
   - {fileID: 2130400158}
   pv: {fileID: 1060651003}
+  debugItemList:
+  - Busuker
+  - 
+  - 
 --- !u!114 &1060651003
 MonoBehaviour:
   m_ObjectHideFlags: 0
