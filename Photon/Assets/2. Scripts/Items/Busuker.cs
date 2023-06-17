@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class Busuker : ItemCtrl
 {
-
-
     [Header("Busuker increase magnitude")]
     [Range(1f, 3f)]
     public float magnitude;
