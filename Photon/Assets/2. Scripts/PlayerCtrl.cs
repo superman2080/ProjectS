@@ -286,7 +286,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void SetGunSprite(string name)
     {
-        Sprite gunResource = Resources.Load<Sprite>("Sprites/" + name);
+        Sprite gunResource = Resources.Load<Sprite>("Sprites/Guns/" + name);
         gunSprite.sprite = gunResource;
         if (pv.IsMine)
             gunUIImage.sprite = gunResource;

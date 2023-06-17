@@ -27,7 +27,6 @@ public class Busuker : ItemCtrl
 
         if (owner.hp <= 0)
         {
-            Debug.LogError("!");
             owner.damage = originDamage;
             owner.speed = originSpeed;
         }

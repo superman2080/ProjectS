@@ -1,18 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlatformCtrl : MonoBehaviour
+[RequireComponent(typeof(PhotonView), typeof(PhotonTransformView))]
+public abstract class PlatformCtrl : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
-    void Start()
+    public PhotonView pv;
+
+    protected abstract void OnTouchPlatform(Collision2D collision);
+
+    protected abstract void OnLeavePlatform(Collision2D collision);
+
+    protected abstract void PlatformBehavior();
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("Player"))
+            OnTouchPlatform(collision);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("Player"))
+            OnLeavePlatform(collision);
     }
 }
