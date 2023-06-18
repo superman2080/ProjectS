@@ -5,9 +5,9 @@ using Photon.Pun;
 
 public class Ghost : ItemCtrl
 {
-    /* ¸¶¿ì½º ÈÙ Å¬¸¯ ½Ã
-     »ó´ë¹æ¿¡°Ô ÀÚ½Å°ú ÀÚ½ÅÀÇ ´Ğ³×ÀÓ,Ã¼·Â¹Ù, º¸È£¸·Àº Åõ¸íÇÏ°Ô
-     ÀÚ½Å¿¡°Ô ÀÚ½ÅÀº ¹İÅõ¸íÇÏ°Ô, UI´Â ±×´ë·Î */
+    /* ë§ˆìš°ìŠ¤ íœ  í´ë¦­ ì‹œ
+     ìƒëŒ€ë°©ì—ê²Œ ìì‹ ê³¼ ìì‹ ì˜ ë‹‰ë„¤ì„,ì²´ë ¥ë°”, ë³´í˜¸ë§‰ì€ íˆ¬ëª…í•˜ê²Œ
+     ìì‹ ì—ê²Œ ìì‹ ì€ ë°˜íˆ¬ëª…í•˜ê²Œ, UIëŠ” ê·¸ëŒ€ë¡œ */
 
     private SpriteRenderer[] srList = new SpriteRenderer[2];
     private SpriteRenderer shieldSr = new SpriteRenderer();
@@ -29,6 +29,7 @@ public class Ghost : ItemCtrl
     public override void ItemEffect()
     {
         GameObject gunSr = (owner.transform.Find("GunTr")).transform.Find("GunImage").gameObject;
+
 
         srList[0] = owner.GetComponent<SpriteRenderer>();
         srList[1] = gunSr.GetComponent<SpriteRenderer>();
@@ -85,7 +86,7 @@ public class Ghost : ItemCtrl
         yield return null;
 
         if (!isUsed){
-            if (pv.IsMine && Input.GetMouseButtonDown(2)) //¸¶¿ì½ºÈÙ
+            if (pv.IsMine && Input.GetMouseButtonDown(2)) //ë§ˆìš°ìŠ¤íœ 
             {
                 ghostStartTime = Time.time;
                 pv.RPC(nameof(OnBecameGhost), RpcTarget.AllBuffered);
