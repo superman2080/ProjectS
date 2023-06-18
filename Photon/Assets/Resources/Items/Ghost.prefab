@@ -68,5 +68,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pv: {fileID: 385198685089537508}
-  transparency: 0.28
-  ghostDuration: 5.6
+  transparency: 0.25
+  ghostDuration: 3
