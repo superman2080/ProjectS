@@ -2179,7 +2179,7 @@ MonoBehaviour:
   - {fileID: 2130400158}
   pv: {fileID: 1060651003}
   debugItemList:
-  - Ghost
+  - Dash
   - 
   - 
 --- !u!114 &1060651003

@@ -10,23 +10,13 @@ public class Ghost : ItemCtrl
      상대방에게 자신과 자신의 닉네임,체력바, 보호막은 투명하게
      자신에게 자신은 반투명하게, UI는 그대로 */
 
-    private SpriteRenderer[] srList = new SpriteRenderer[2];
-    private SpriteRenderer shieldSr = new SpriteRenderer();
-
     [Range(0f, 0.5f)]
     public float transparency;
-    private Color color;
 
     [Range(3f, 10f)]
     public float ghostDuration;
     private Coroutine nowCor;
     
-    private float ghostStartTime;
-
-    private bool isUsed;
-    private bool isDead;
-    private bool isEnded;
-    private bool hasShield;
 
 
     //public override void ItemEffect()
@@ -126,6 +116,8 @@ public class Ghost : ItemCtrl
 
     private IEnumerator GhostSkillCor(float duration)
     {
+
+        //Transparenting child objects
         SpriteRenderer[] spriteRenderers = owner.transform.GetComponentsInChildren<SpriteRenderer>();
         Image hpArea = owner.transform.Find("Canvas").Find("HPArea").GetComponent<Image>();
         if (owner.pv.IsMine == false)
@@ -144,10 +136,14 @@ public class Ghost : ItemCtrl
                 sR.enabled = false;
             }
         }
+        //
 
+        //Wait until end of duration
         yield return new WaitForSeconds(duration);
+        //
 
-        if(owner.isDead == false)
+        //Untransparenting child objects (not died)
+        if (owner.isDead == false)
         {
             foreach (var sR in spriteRenderers)
             {
@@ -160,6 +156,7 @@ public class Ghost : ItemCtrl
         }
         else
         {
+            //If i die, wait until I'm respawn
             yield return new WaitUntil(() => owner.isDead == false);
 
             foreach (var sR in spriteRenderers)

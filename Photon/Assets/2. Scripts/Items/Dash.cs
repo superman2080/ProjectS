@@ -41,6 +41,7 @@ public class Dash : ItemCtrl
             yield return null;
             dT += Time.deltaTime;
         }
+        owner.rb.velocity = Vector2.zero;
         nowCor = null;
     }
 
