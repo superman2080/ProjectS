@@ -67,7 +67,7 @@ public class ItemManager : MonoBehaviour
         {
             while (true)
             {
-                rand = Random.Range(0, 7);
+                rand = Random.Range(0, 9);
                 bool notEqual = true;
                 foreach (var it in owner.itemList)
                 {

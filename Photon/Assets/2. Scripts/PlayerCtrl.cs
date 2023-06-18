@@ -41,10 +41,13 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [HideInInspector]
     public float gunAngle;
     public float attSpeed;
+    [HideInInspector]
+    public float attMag;
     private float attDelta;
     private Vector2 bulletMovePos;
     private float gunTrX;
     private float flip = 1;
+
     [Header("Related to items")]
     public Transform itemTr;
     public List<ItemCtrl> itemList = new List<ItemCtrl>();
@@ -99,6 +102,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gunUIImage = attGauge.transform.Find("GunUIImage").GetComponent<Image>();
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
+        attMag = 1;
         //이벤트 처리 부분
         if (pv.IsMine)
         {
@@ -214,19 +218,19 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gunAngle = GameMath.GetAngle(transform.position, bulletMovePos);
         FlipXRPC(flip);
         SetGunAngle(gunAngle);
-        if (attDelta <= 1 / attSpeed)
+
+        if (attDelta <= 1 / (attSpeed * attMag))
         {
             attDelta += Time.deltaTime;
 
         }
 
-        if (Input.GetMouseButtonDown(0) && attDelta >= 1 / attSpeed)
+        if (Input.GetMouseButtonDown(0) && attDelta >= 1 / (attSpeed * attMag))
         {
             OnPlayerAttack?.Invoke(this, EventArgs.Empty);
-            //animator.SetTrigger("Shot");
             attDelta = 0;
         }
-        attGauge.fillAmount = attDelta / (1 / attSpeed);
+        attGauge.fillAmount = attDelta / (1 / (attSpeed * attMag));
     }
 
     public void CreateBullet(float dmg, float ang)
@@ -260,7 +264,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void TakeDamage(float dmg)
     {
-        if(OnTakenDamage != null)
+        if (OnTakenDamage != null)
         {
             DamageEventArgs args = new DamageEventArgs();
             args.damage = dmg;
@@ -306,6 +310,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void ClearAttackEvent() => OnPlayerAttack = null;
+
+    public void ClearSkillEvent() => OnUseSkill = null;
 
     [PunRPC]
     public void Respawn()

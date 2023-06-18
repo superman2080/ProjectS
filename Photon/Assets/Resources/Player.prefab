@@ -249,6 +249,7 @@ MonoBehaviour:
   isInvincible: 0
   gunAngle: 0
   attSpeed: 2
+  attMag: 0
   itemTr: {fileID: 1238188240433673599}
   itemList: []
   actorNum: 0
@@ -635,7 +636,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fd3cb6d4535d1f44b97c92352d580790, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3b67ebab590a4ff4fb0d14bafc8b4584, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -743,7 +744,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 3b67ebab590a4ff4fb0d14bafc8b4584, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
