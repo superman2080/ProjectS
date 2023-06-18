@@ -249,7 +249,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     void SetGunAngle(float ang)
     {
-        //gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
         gunTr.eulerAngles = new Vector3(0, 0, !spriteRenderer.flipX ? ang + 180f : ang);
     }
 
