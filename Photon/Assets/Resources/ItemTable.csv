@@ -6,11 +6,11 @@ ItemNum,ItemName
 5,SizeDown
 6,Busuker
 7,LaserShot
-8,Ghost
-9,Dash
-10,InfiniteShot
-11,ReLoadCoolDown
-12,SpeedShot
+8,Dash
+9,SpeedShot
+10,Ghost
+11,InfiniteShot
+12,ReLoadCoolDown
 13,SplashShot
 14,Vampirism
 15,Resurrection

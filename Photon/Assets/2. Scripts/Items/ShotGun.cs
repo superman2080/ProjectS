@@ -27,7 +27,7 @@ public class ShotGun : ItemCtrl
     {
         base.OnGetItem(actorNum);
         owner.attSpeed = attSpeed;
-        owner.pv.RPC(nameof(PlayerCtrl.SetGunSprite), RpcTarget.AllBuffered, spriteName);
+        owner.pv.RPC(nameof(PlayerCtrl.SetGunSprite), RpcTarget.All, spriteName);
         owner.ClearAttackEvent();
         owner.OnPlayerAttack += ItemEvent;
     }

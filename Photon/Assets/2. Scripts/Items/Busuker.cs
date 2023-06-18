@@ -27,7 +27,6 @@ public class Busuker : ItemCtrl
 
         if (owner.hp <= 0)
         {
-            Debug.LogError("!");
             owner.damage = originDamage;
             owner.speed = originSpeed;
         }
@@ -38,11 +37,15 @@ public class Busuker : ItemCtrl
     {
         base.OnGetItem(actorNum);
 
-        originSpeed = owner.speed;
-        originDamage = owner.damage;
+        pv.RPC(nameof(SetOriginValues), RpcTarget.All, owner.speed, owner.damage);
         owner.OnTakenDamage += ItemEvent;
+    }
 
-  
+    [PunRPC]
+    public void SetOriginValues(float spd, float dmg)
+    {
+        originSpeed = spd;
+        originDamage = dmg;
     }
 }
 

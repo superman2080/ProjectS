@@ -6,11 +6,13 @@ using UnityEngine;
 
 public class LaserShot : ItemCtrl
 {
+    public float attSpeed;
     public float keepLaserTime;
     [Range(3f, 10f)]
     public float magnitude;
     public LineRenderer lineRenderer;
     public float laserWidth;
+    public string spriteName;
     private float laserScale;
     private Coroutine nowCor;
 
@@ -99,14 +101,9 @@ public class LaserShot : ItemCtrl
     public override void OnGetItem(int actorNum)
     {
         base.OnGetItem(actorNum);
-
+        owner.pv.RPC(nameof(PlayerCtrl.SetGunSprite), RpcTarget.All, spriteName);
+        owner.attSpeed = attSpeed;
         owner.ClearAttackEvent();
         owner.OnPlayerAttack += ItemEvent;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(debugCenter, debugSize);
     }
 }

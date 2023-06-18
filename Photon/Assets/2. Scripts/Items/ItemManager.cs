@@ -9,6 +9,8 @@ public class ItemManager : MonoBehaviour
 {
     public Button[] selectBtn = new Button[3];
     public PhotonView pv;
+    [Header("For Debug item list(max 3)\nPut string on right place if you want item debug (or leave empty)")]
+    public string[] debugItemList = new string[3];
     private PlayerCtrl owner;
     private List<Dictionary<string, object>> itemChart;
 
@@ -42,8 +44,11 @@ public class ItemManager : MonoBehaviour
         for (int i = 0; i < selectBtn.Length; i++)
         {
             selectBtn[i].onClick.RemoveAllListeners();
-            selectBtn[i].GetComponentInChildren<Text>().text = tempItemList[i];
             string itemName = tempItemList[i];
+            if (string.IsNullOrEmpty(debugItemList[i]) == false)
+                itemName = debugItemList[i];
+            selectBtn[i].GetComponentInChildren<Text>().text = itemName;
+                
             selectBtn[i].onClick.AddListener(() =>
             {
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
@@ -66,7 +71,6 @@ public class ItemManager : MonoBehaviour
                 bool notEqual = true;
                 foreach (var it in owner.itemList)
                 {
-                    Debug.LogError(it.name + it.name.Contains(itemChart[rand]["ItemName"].ToString()));
                     if (it.name.Contains(itemChart[rand]["ItemName"].ToString()))
                     {
                         notEqual = false;
