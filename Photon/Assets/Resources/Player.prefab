@@ -238,6 +238,8 @@ MonoBehaviour:
   pv: {fileID: 7487547219633800016}
   nicknameText: {fileID: 937504534918113587}
   selectItemPanel: {fileID: 0}
+  winPanel: {fileID: 0}
+  losePanel: {fileID: 0}
   gunSprite: {fileID: 2965434679474030247}
   gunTr: {fileID: 8586936884319439134}
   hpBar: {fileID: 5429874585534844754}

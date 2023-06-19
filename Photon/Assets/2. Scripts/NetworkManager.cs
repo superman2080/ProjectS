@@ -11,6 +11,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public InputField nicknameInput;
     public GameObject disconnectedPanel;
     public GameObject respawnPanel;
+    public GameObject winPanel;
+    public GameObject losePanel;
 
     public AudioSource audioSource;
     public AudioClip lobbyBGM;
@@ -34,6 +36,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
+
+    public void Disconnect() => PhotonNetwork.Disconnect();
 
     public override void OnConnectedToMaster()
     {
@@ -70,6 +74,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         disconnectedPanel.SetActive(true);
         respawnPanel.SetActive(false);
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
+        
     }
 
     public void Spawn()
