@@ -49,6 +49,7 @@ MonoBehaviour:
   dashDist: 2
   dashTime: 0.1
   coolTime: 2
+  dashSFX: {fileID: 8300000, guid: c639ef20c0a1ecc4cb748379bdeb8151, type: 3}
 --- !u!114 &5951883114319289419
 MonoBehaviour:
   m_ObjectHideFlags: 0

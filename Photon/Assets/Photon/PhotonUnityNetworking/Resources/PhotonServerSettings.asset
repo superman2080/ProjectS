@@ -19,7 +19,7 @@ MonoBehaviour:
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: kr
     Server: 
     Port: 0
     ProxyServer: 
@@ -84,6 +84,9 @@ MonoBehaviour:
   - InitSpawnPos
   - InitRound
   - FindSpawnPos
+  - PlaySounds
+  - PlaySoundOneshot
+  - PlaySFXRPC
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

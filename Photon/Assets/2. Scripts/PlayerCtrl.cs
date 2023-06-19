@@ -58,10 +58,15 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public event EventHandler OnTakenDamage;
     public EventHandler DefaultAttack;
 
+    [Header("Related to audio")]
+    public AudioSource audioSource;
+    public AudioClip gunSFX;
 
+    [HideInInspector]
     public int actorNum;
     [HideInInspector]
     public bool isDead = false;
+    [HideInInspector]
     public int deathCnt;
     private int groundCnt;
     private Vector3 curPos;
@@ -115,6 +120,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Start()
     {
+        audioSource = gameObject.GetComponent<AudioSource>();
         pv.RPC(nameof(SetActorNum), RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
         if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
@@ -132,7 +138,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     private void InitialEvents()
     {
-        DefaultAttack += (sender, e) => { CreateBullet(damage, gunAngle); };
+        DefaultAttack += (sender, e) => { 
+            audioSource.PlayOneShot(gunSFX);
+            CreateBullet(damage, gunAngle);
+        };
         OnPlayerAttack += DefaultAttack;
     }
 
@@ -153,7 +162,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
-            FlipXRPC(flip);
+            FlipX(flip);
             SetGunAngle(gunAngle);
         }
     }
@@ -232,7 +241,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
         gunAngle = GameMath.GetAngle(transform.position, bulletMovePos);
-        FlipXRPC(flip);
+        FlipX(flip);
         SetGunAngle(gunAngle);
 
         if (attDelta <= 1 / (attSpeed * attMag))
@@ -244,6 +253,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.GetMouseButtonDown(0) && attDelta >= 1 / (attSpeed * attMag))
         {
             OnPlayerAttack?.Invoke(this, EventArgs.Empty);
+
             attDelta = 0;
         }
         attGauge.fillAmount = attDelta / (1 / (attSpeed * attMag));
@@ -256,7 +266,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         b.pv.RPC(nameof(BulletCtrl.SetAngle), RpcTarget.All, ang);
     }
 
-    void FlipXRPC(float axis)
+    void FlipX(float axis)
     {
         spriteRenderer.flipX = axis == 1; // -1;
         gunTr.transform.localScale = new Vector3(-axis, -1, 1);
@@ -344,7 +354,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         {
             StartCoroutine(InitRoundCor());
             selectItemPanel.SetActive(false);
-            Debug.LogError((3f - deathCnt) / 3f);
             deathCntImg.fillAmount = (3 - deathCnt) / 3f;
         }
     }
@@ -366,6 +375,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             player.GetComponent<PlayerCtrl>().pv.RPC(nameof(PlayerCtrl.FindSpawnPos), RpcTarget.AllBuffered);
         }
     }
+
 
     private void OnDrawGizmos()
     {

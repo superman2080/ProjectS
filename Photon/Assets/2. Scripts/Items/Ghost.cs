@@ -18,6 +18,7 @@ public class Ghost : ItemCtrl
     private Coroutine nowCor;
     [Range(0.5f, 10f)]
     public float coolTime;
+    public AudioClip ghostSFX;
     private Coroutine coolTimeCor;
     
 
@@ -138,6 +139,7 @@ public class Ghost : ItemCtrl
                 sR.enabled = false;
             }
         }
+        owner.audioSource.PlayOneShot(ghostSFX);
         //
 
         //Wait until end of duration

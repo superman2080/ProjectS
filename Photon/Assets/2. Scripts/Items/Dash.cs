@@ -12,6 +12,7 @@ public class Dash : ItemCtrl
 
     [Range(0.5f, 10f)]
     public float coolTime;
+    public AudioClip dashSFX;
     private Coroutine nowCor;
     private Coroutine coolTimeCor;
 
@@ -36,6 +37,7 @@ public class Dash : ItemCtrl
     private IEnumerator DashCor(Vector2 origin, Vector2 moveTo, float time)
     {
         float dT = 0;
+        owner.audioSource.PlayOneShot(dashSFX);
         while(true)
         {
             if (dT > time)

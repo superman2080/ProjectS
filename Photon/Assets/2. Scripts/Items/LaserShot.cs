@@ -13,6 +13,7 @@ public class LaserShot : ItemCtrl
     public LineRenderer lineRenderer;
     public float laserWidth;
     public string spriteName;
+    public AudioClip laserSFX;
     private float laserScale;
     private Coroutine nowCor;
 
@@ -43,6 +44,7 @@ public class LaserShot : ItemCtrl
             dT += Time.deltaTime;
             yield return null;
         }
+        owner.audioSource.PlayOneShot(owner.gunSFX);
         pv.RPC(nameof(SetLaserScale), RpcTarget.All, dT);
         Vector2 endPos = new Vector2((-Mathf.Cos(owner.gunAngle * Mathf.Deg2Rad) * laserScale) + owner.gunTr.position.x, (-Mathf.Sin(owner.gunAngle * Mathf.Deg2Rad) * laserScale) + owner.gunTr.position.y);
         debugCenter = new Vector2((owner.gunTr.position.x + endPos.x) / 2, (owner.gunTr.position.y + endPos.y) / 2);
@@ -103,6 +105,7 @@ public class LaserShot : ItemCtrl
         base.OnGetItem(actorNum);
         owner.pv.RPC(nameof(PlayerCtrl.SetGunSprite), RpcTarget.All, spriteName);
         owner.attSpeed = attSpeed;
+        owner.gunSFX = laserSFX;
         owner.ClearAttackEvent();
         owner.OnPlayerAttack += ItemEvent;
     }
