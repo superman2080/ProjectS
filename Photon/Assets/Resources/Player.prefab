@@ -194,12 +194,12 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 1
     Name: Jump
-  - Type: 9
-    SynchronizeType: 1
-    Name: Shot
   - Type: 4
     SynchronizeType: 1
     Name: Walk
+  - Type: 4
+    SynchronizeType: 0
+    Name: Landing
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -242,6 +242,7 @@ MonoBehaviour:
   hpBar: {fileID: 5429874585534844754}
   attGauge: {fileID: 0}
   gunUIImage: {fileID: 0}
+  deathCntImg: {fileID: 0}
   damage: 10
   maxHp: 100
   hp: 100
@@ -254,6 +255,7 @@ MonoBehaviour:
   itemList: []
   actorNum: 0
   isDead: 0
+  deathCnt: 0
 --- !u!1 &1728941103900275045
 GameObject:
   m_ObjectHideFlags: 0

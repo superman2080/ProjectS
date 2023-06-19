@@ -22,7 +22,6 @@ public class SpeedShot : ItemCtrl
 
         if (IsContainingItem(nameof(Busuker)))
         {
-            Debug.LogError("Exist busuker");
             ItemCtrl busurker = owner.itemList.Find((n) => n is Busuker) as Busuker;
             busurker.pv.RPC(nameof(Busuker.SetOriginValues), RpcTarget.All, owner.speed, owner.damage);
         }

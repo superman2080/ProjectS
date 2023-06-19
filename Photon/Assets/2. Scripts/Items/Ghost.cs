@@ -16,8 +16,9 @@ public class Ghost : ItemCtrl
     [Range(3f, 10f)]
     public float ghostDuration;
     private Coroutine nowCor;
-    [Range(1f, 10f)]
+    [Range(0.5f, 10f)]
     public float coolTime;
+    private Coroutine coolTimeCor;
     
 
 
@@ -134,7 +135,6 @@ public class Ghost : ItemCtrl
                 sR.color = new Color(1, 1, 1, transparency);
             else
             {
-                Debug.LogError(owner.name);
                 sR.enabled = false;
             }
         }
@@ -171,12 +171,19 @@ public class Ghost : ItemCtrl
             hpArea.enabled = true;
         }
         nowCor = null;
+        coolTimeCor = StartCoroutine(CoolTimeCor(coolTime));
     }
 
     [PunRPC]
     public void GhostSkill(float duration)
     {
-        if (nowCor == null)
+        if (nowCor == null && coolTimeCor == null)
             nowCor = StartCoroutine(GhostSkillCor(duration));
+    }
+
+    private IEnumerator CoolTimeCor(float cT)
+    {
+        yield return new WaitForSeconds(cT);
+        coolTimeCor = null;
     }
 }

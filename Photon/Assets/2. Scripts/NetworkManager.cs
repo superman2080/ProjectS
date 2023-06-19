@@ -51,7 +51,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //랜덤 위치 생성
         PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         respawnPanel.SetActive(false);
+
+
     }
+
+
 
     IEnumerator DestroyBullet()
     {
