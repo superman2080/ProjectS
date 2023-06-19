@@ -40,7 +40,7 @@ public class ExtinctionPlatform : PlatformCtrl
     {
         for (float i = 1; i <= 10; i++)
         {
-            pv.RPC(nameof(SetAlpha), RpcTarget.All, ((10f - i) * 0.1f));
+            pv.RPC(nameof(SetAlpha), RpcTarget.All, (10f - i) * 0.1f);
             yield return new WaitForSeconds(eT / 10f);
         }
         col.enabled = false;

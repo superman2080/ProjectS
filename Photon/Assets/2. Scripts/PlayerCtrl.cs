@@ -22,11 +22,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public PhotonView pv;
     public Text nicknameText;
     public GameObject selectItemPanel;
+    public GameObject winPanel;
+    public GameObject losePanel;
     public SpriteRenderer gunSprite;
     public Transform gunTr;
     public Image hpBar;
     public Image attGauge;
     public Image gunUIImage;
+    public Image deathCntImg;
 
     [Header("Related to attack")]
     public float damage;
@@ -57,10 +60,11 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public event EventHandler OnTakenDamage;
     public EventHandler DefaultAttack;
 
-    [HideInInspector]
+
     public int actorNum;
     [HideInInspector]
     public bool isDead = false;
+    public int deathCnt;
     private int groundCnt;
     private Vector3 curPos;
 
@@ -97,9 +101,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
         //꺼져있는 오브젝트이기 때문에
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
+        winPanel = GameObject.Find("Canvas").transform.Find("WinPanel").gameObject;
+        losePanel = GameObject.Find("Canvas").transform.Find("LosePanel").gameObject;
         selectItemPanel.SetActive(false);
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
         attGauge = GameObject.Find("Canvas").transform.Find("IngameUI").Find("AttackGauge").GetComponent<Image>();
-        gunUIImage = attGauge.transform.Find("GunUIImage").GetComponent<Image>();
+        gunUIImage = GameObject.Find("Canvas").transform.Find("IngameUI").Find("GunUIImage").GetComponent<Image>();
+        deathCntImg = GameObject.Find("Canvas").transform.Find("IngameUI").Find("DeathCountImg").GetComponent<Image>();
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
         attMag = 1;
@@ -114,8 +123,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         pv.RPC(nameof(SetActorNum), RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
-
-
+        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            StartCoroutine(InitRoundCor());
     }
 
     [PunRPC]
@@ -159,21 +168,32 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         float velocity = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(speed * velocity, rb.velocity.y);
+
+        //Processing animation
         if (velocity != 0)
             animator.SetBool("Walk", true);
         else
             animator.SetBool("Walk", false);
+
+        if (groundCnt != 2)
+        {
+            animator.SetBool("Jump", true);
+            if (rb.velocity.y < 0)
+                animator.SetBool("Landing", true);
+        }
+        else
+        {
+            animator.SetBool("Jump", false);
+            animator.SetBool("Landing", false);
+        }
         //
+
+
 
         //바닥 체크, 점프
         if (Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(0, -0.5f), 0.1f, 1 << LayerMask.NameToLayer("Ground")) != null && rb.velocity.y < 0)
         {
-            animator.SetBool("Jump", false);
             groundCnt = 2;
-        }
-        else
-        {
-            animator.SetBool("Jump", true);
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && groundCnt > 0)
@@ -182,6 +202,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
             pv.RPC(nameof(JumpRPC), RpcTarget.All);
         }
         //
+
+        
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -274,6 +296,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         hpBar.fillAmount = hp / maxHp;
         if(hp <= 0)
         {
+            deathCnt++;
             pv.RPC(nameof(PlayerDeath), RpcTarget.AllBuffered);
         }
     }
@@ -304,8 +327,37 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gameObject.GetComponent<Collider2D>().enabled = false;
         rb.isKinematic = true;
         isDead = true;
-        if (pv.IsMine)
+
+        if (deathCnt >= 3f)
+        {
+            if (pv.IsMine)
+            {
+                StartCoroutine(PanelFadeIn(losePanel));
+            }
+            else
+            {
+                StartCoroutine(PanelFadeIn(winPanel));
+            }
+        }
+        else if (pv.IsMine)
+        {
             selectItemPanel.SetActive(true);
+        }
+    }
+
+    IEnumerator PanelFadeIn(GameObject resultPanel)
+    //private void PanelFadeIn(GameObject resultPanel)
+    {
+        resultPanel.SetActive(true);
+        Color color = new Color (1f, 1f, 1f, 0f);
+
+        for (float i = 0f; i < 1; i += 0.01f)
+        {
+            color.a = i;
+            resultPanel.transform.GetChild(0).GetComponent<Image>().color = color;
+
+            yield return new WaitForSeconds(0.04f);
+        }
     }
 
     public void ClearAttackEvent() => OnPlayerAttack = null;
@@ -321,11 +373,30 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gameObject.GetComponent<Collider2D>().enabled = true;
         rb.isKinematic = false;
         isDead = false;
-        pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
         if (pv.IsMine)
         {
+            StartCoroutine(InitRoundCor());
             selectItemPanel.SetActive(false);
-            transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
+            Debug.Log((3f - deathCnt) / 3f);//Error((3f - deathCnt) / 3f);
+            deathCntImg.fillAmount = (3 - deathCnt) / 3f;
+        }
+    }
+
+    [PunRPC]
+    public void FindSpawnPos()
+    {
+        Vector3 spawnPos = GameObject.Find("Spawn_" + actorNum).transform.position;
+        transform.position = spawnPos;
+    }
+
+    private IEnumerator InitRoundCor()
+    {
+        yield return null;
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var player in players)
+        {
+            player.GetComponent<PlayerCtrl>().pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
+            player.GetComponent<PlayerCtrl>().pv.RPC(nameof(PlayerCtrl.FindSpawnPos), RpcTarget.AllBuffered);
         }
     }
 

@@ -9,7 +9,11 @@ public class Dash : ItemCtrl
     public float dashDist;
 
     public float dashTime;
+
+    [Range(0.5f, 10f)]
+    public float coolTime;
     private Coroutine nowCor;
+    private Coroutine coolTimeCor;
 
 
     public override void ItemEffect()
@@ -19,12 +23,12 @@ public class Dash : ItemCtrl
 
         if (hit)
         {
-            if (nowCor == null)
+            if (nowCor == null && coolTimeCor == null)
                 nowCor = StartCoroutine(DashCor(transform.position, hit.point, dashTime));
         }
         else
         {
-            if (nowCor == null)
+            if (nowCor == null && coolTimeCor == null)
                 nowCor = StartCoroutine(DashCor(owner.transform.position, (Vector2)owner.transform.position + (Vector2.left * flip * dashDist), dashTime));
         }
     }
@@ -41,7 +45,15 @@ public class Dash : ItemCtrl
             yield return null;
             dT += Time.deltaTime;
         }
+        owner.rb.velocity = Vector2.zero;
         nowCor = null;
+        coolTimeCor = StartCoroutine(CoolTimeCor(coolTime));
+    }
+
+    private IEnumerator CoolTimeCor(float cT)
+    {
+        yield return new WaitForSeconds(cT);
+        coolTimeCor = null;
     }
 
     [PunRPC]

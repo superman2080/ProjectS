@@ -11,6 +11,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public InputField nicknameInput;
     public GameObject disconnectedPanel;
     public GameObject respawnPanel;
+    public GameObject winPanel;
+    public GameObject losePanel;
 
     private void Awake()
     {
@@ -20,6 +22,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
+
+    public void Disconnect() => PhotonNetwork.Disconnect();
 
     public override void OnConnectedToMaster()
     {
@@ -44,14 +48,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         disconnectedPanel.SetActive(true);
         respawnPanel.SetActive(false);
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
+        
     }
 
     public void Spawn()
     {
         //랜덤 위치 생성
-        PhotonNetwork.Instantiate("Player", new Vector3(Random.Range(-7f, 21f), 4, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         respawnPanel.SetActive(false);
+
+
     }
+
+
 
     IEnumerator DestroyBullet()
     {

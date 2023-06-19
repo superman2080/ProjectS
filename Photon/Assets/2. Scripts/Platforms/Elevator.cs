@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class Elevator : PlatformCtrl
 {
-    public Vector2[] destination = new Vector2[2];
+    public Vector3[] destination = new Vector3[2];
     public float moveTime;
     private bool flag;
     private Coroutine nowCor;
@@ -36,9 +36,9 @@ public class Elevator : PlatformCtrl
                 break;
 
             if (flag)
-                transform.position = Vector2.Lerp(destination[0], destination[1], dT / mT);
+                transform.position = Vector3.Lerp(destination[0], destination[1], dT / mT);
             else
-                transform.position = Vector2.Lerp(destination[1], destination[0], dT / mT);
+                transform.position = Vector3.Lerp(destination[1], destination[0], dT / mT);
 
             dT += Time.deltaTime;
             yield return null;
@@ -52,11 +52,6 @@ public class Elevator : PlatformCtrl
     {
         if (PhotonNetwork.IsMasterClient)
             PlatformBehavior();
-        //else if ((transform.position - curPos).sqrMagnitude >= 100)
-        //    transform.position = curPos;
-        //else
-        //    transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
-
     }
 
     private void OnDrawGizmos()
