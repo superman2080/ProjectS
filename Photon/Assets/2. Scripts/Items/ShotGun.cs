@@ -13,9 +13,11 @@ public class ShotGun : ItemCtrl
     public int interval;
     public EventHandler ShotGunEvent;
     public string spriteName;
+    public AudioClip shotgunSFX;
 
     public override void ItemEffect()
     {
+        owner.audioSource.PlayOneShot(shotgunSFX);
         for (int i = 0; i < bulletNum; i++)
         {
             owner.CreateBullet(owner.damage, owner.gunAngle + (-interval * (bulletNum - 1) / 2 + i * interval));

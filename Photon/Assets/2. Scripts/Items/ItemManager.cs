@@ -11,6 +11,7 @@ public class ItemManager : MonoBehaviour
     public PhotonView pv;
     [Header("For Debug item list(max 3)\nPut string on right place if you want item debug (or leave empty)")]
     public string[] debugItemList = new string[3];
+    public AudioClip buttonSound;
     private PlayerCtrl owner;
     private List<Dictionary<string, object>> itemChart;
 
@@ -54,6 +55,7 @@ public class ItemManager : MonoBehaviour
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
                 item.pv.RPC(nameof(ItemCtrl.SetOwner), RpcTarget.AllBuffered, actorNum);
                 item.pv.RPC(nameof(ItemCtrl.OnGetItem), RpcTarget.AllBuffered, actorNum);
+                owner.audioSource.PlayOneShot(buttonSound);
                 //pv.RPC(nameof(GetItem), RpcTarget.AllBuffered, actorNum, itemName);
             });
         }

@@ -71,3 +71,4 @@ MonoBehaviour:
   transparency: 0.25
   ghostDuration: 3
   coolTime: 5
+  ghostSFX: {fileID: 8300000, guid: 9b42a63e34bfbb447b66a5f0d5fb1bde, type: 3}
