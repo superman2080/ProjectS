@@ -22,6 +22,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public PhotonView pv;
     public Text nicknameText;
     public GameObject selectItemPanel;
+    public GameObject winPanel;
+    public GameObject losePanel;
     public SpriteRenderer gunSprite;
     public Transform gunTr;
     public Image hpBar;
@@ -99,7 +101,11 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
         //꺼져있는 오브젝트이기 때문에
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
+        winPanel = GameObject.Find("Canvas").transform.Find("WinPanel").gameObject;
+        losePanel = GameObject.Find("Canvas").transform.Find("LosePanel").gameObject;
         selectItemPanel.SetActive(false);
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
         attGauge = GameObject.Find("Canvas").transform.Find("IngameUI").Find("AttackGauge").GetComponent<Image>();
         gunUIImage = GameObject.Find("Canvas").transform.Find("IngameUI").Find("GunUIImage").GetComponent<Image>();
         deathCntImg = GameObject.Find("Canvas").transform.Find("IngameUI").Find("DeathCountImg").GetComponent<Image>();
@@ -321,9 +327,36 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gameObject.GetComponent<Collider2D>().enabled = false;
         rb.isKinematic = true;
         isDead = true;
-        if (pv.IsMine)
+
+        if (deathCnt >= 3f)
+        {
+            if (pv.IsMine)
+            {
+                StartCoroutine(PanelFadeIn(losePanel));
+            }
+            else
+            {
+                StartCoroutine(PanelFadeIn(winPanel));
+            }
+        }
+        else if (pv.IsMine)
         {
             selectItemPanel.SetActive(true);
+        }
+    }
+
+    IEnumerator PanelFadeIn(GameObject resultPanel)
+    //private void PanelFadeIn(GameObject resultPanel)
+    {
+        resultPanel.SetActive(true);
+        Color color = new Color (1f, 1f, 1f, 0f);
+
+        for (float i = 0f; i < 1; i += 0.01f)
+        {
+            color.a = i;
+            resultPanel.transform.GetChild(0).GetComponent<Image>().color = color;
+
+            yield return new WaitForSeconds(0.04f);
         }
     }
 
@@ -344,7 +377,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         {
             StartCoroutine(InitRoundCor());
             selectItemPanel.SetActive(false);
-            Debug.LogError((3f - deathCnt) / 3f);
+            Debug.Log((3f - deathCnt) / 3f);//Error((3f - deathCnt) / 3f);
             deathCntImg.fillAmount = (3 - deathCnt) / 3f;
         }
     }
