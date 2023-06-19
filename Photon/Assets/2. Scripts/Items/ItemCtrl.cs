@@ -40,12 +40,6 @@ public abstract class ItemCtrl : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    protected void RemoveItem(string itemName)
-    {
-
-    }
-
-    [PunRPC]
     public void SetOwner(int actorNum)
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
