@@ -81,6 +81,9 @@ MonoBehaviour:
   - SetOriginValues
   - SetAlpha
   - GhostSkill
+  - InitSpawnPos
+  - InitRound
+  - FindSpawnPos
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

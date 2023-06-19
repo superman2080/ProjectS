@@ -48,6 +48,7 @@ MonoBehaviour:
   pv: {fileID: 5951883114319289419}
   dashDist: 2
   dashTime: 0.1
+  coolTime: 2
 --- !u!114 &5951883114319289419
 MonoBehaviour:
   m_ObjectHideFlags: 0
