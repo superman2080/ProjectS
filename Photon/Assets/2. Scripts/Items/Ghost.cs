@@ -16,6 +16,8 @@ public class Ghost : ItemCtrl
     [Range(3f, 10f)]
     public float ghostDuration;
     private Coroutine nowCor;
+    [Range(1f, 10f)]
+    public float coolTime;
     
 
 

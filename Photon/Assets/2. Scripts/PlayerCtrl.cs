@@ -61,6 +61,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     public int actorNum;
     [HideInInspector]
     public bool isDead = false;
+    public int deathCnt;
     private int groundCnt;
     private Vector3 curPos;
 
@@ -99,7 +100,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         selectItemPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         selectItemPanel.SetActive(false);
         attGauge = GameObject.Find("Canvas").transform.Find("IngameUI").Find("AttackGauge").GetComponent<Image>();
-        gunUIImage = attGauge.transform.Find("GunUIImage").GetComponent<Image>();
+        gunUIImage = GameObject.Find("Canvas").transform.Find("IngameUI").Find("GunUIImage").GetComponent<Image>();
         //총 포지션 x 부분
         gunTrX = gunTr.transform.localPosition.x;
         attMag = 1;
@@ -114,8 +115,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         pv.RPC(nameof(SetActorNum), RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
-
-
+        InitSpawnPos();
     }
 
     [PunRPC]
@@ -321,12 +321,18 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         gameObject.GetComponent<Collider2D>().enabled = true;
         rb.isKinematic = false;
         isDead = false;
+        InitSpawnPos();
         pv.RPC(nameof(InitialPlayerProps), RpcTarget.All);
         if (pv.IsMine)
         {
             selectItemPanel.SetActive(false);
-            transform.position = new Vector3(UnityEngine.Random.Range(-7f, 21f), 4, 0);
         }
+    }
+
+    public void InitSpawnPos()
+    {
+        Vector3 spawnPos = GameObject.Find("Spawn_" + (actorNum - 1)).transform.position;
+        transform.position = spawnPos;
     }
 
     private void OnDrawGizmos()
