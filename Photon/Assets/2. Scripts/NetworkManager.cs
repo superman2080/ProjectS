@@ -29,9 +29,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
-        audioSource.clip = lobbyBGM;
-        audioSource.loop = true;
-        audioSource.Play();
+        PlayBGM(lobbyBGM);
     }
 
 
@@ -60,8 +58,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         disconnectedPanel.SetActive(false);
         StartCoroutine(DestroyBullet());
         Spawn();
-        audioSource.clip = ingameBGM;
-        audioSource.Play();
+        PlayBGM(ingameBGM);
     }
 
     private void Update()
@@ -76,7 +73,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         respawnPanel.SetActive(false);
         winPanel.SetActive(false);
         losePanel.SetActive(false);
-        
+        PlayBGM(lobbyBGM);
     }
 
     public void Spawn()
@@ -86,6 +83,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         respawnPanel.SetActive(false);
 
 
+    }
+
+    private void PlayBGM(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.loop = true;
+        audioSource.Play();
     }
 
     private string GetRandomRoomCode()

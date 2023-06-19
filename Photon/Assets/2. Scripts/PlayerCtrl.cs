@@ -342,11 +342,11 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (pv.IsMine)
             {
-                StartCoroutine(PanelFadeIn(losePanel));
+                StartCoroutine(PanelFadeIn(losePanel, 1.5f));
             }
             else
             {
-                StartCoroutine(PanelFadeIn(winPanel));
+                StartCoroutine(PanelFadeIn(winPanel, 1.5f));
             }
         }
         else if (pv.IsMine)
@@ -355,19 +355,23 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    IEnumerator PanelFadeIn(GameObject resultPanel)
-    //private void PanelFadeIn(GameObject resultPanel)
+    private IEnumerator PanelFadeIn(GameObject resultPanel, float fadeTime)
     {
         resultPanel.SetActive(true);
         Color color = new Color (1f, 1f, 1f, 0f);
-
-        for (float i = 0f; i < 1; i += 0.01f)
+        float dT = 0;
+        while (true)
         {
-            color.a = i;
-            resultPanel.transform.GetChild(0).GetComponent<Image>().color = color;
+            if (dT > fadeTime)
+                break;
 
-            yield return new WaitForSeconds(0.04f);
+            dT += Time.deltaTime;
+            float a = dT / fadeTime;
+            color.a = a;
+            resultPanel.transform.GetChild(0).GetComponent<Image>().color = color;
+            yield return null;
         }
+        resultPanel.transform.GetChild(0).GetComponent<Image>().color = Color.white;
     }
 
     public void ClearAttackEvent() => OnPlayerAttack = null;
