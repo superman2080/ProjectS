@@ -50,6 +50,7 @@ MonoBehaviour:
   bulletNum: 4
   interval: 5
   spriteName: ShotGun
+  shotgunSFX: {fileID: 8300000, guid: df42a7c69473ca74f94ccc00f649e5a8, type: 3}
 --- !u!114 &7451955209536098212
 MonoBehaviour:
   m_ObjectHideFlags: 0
