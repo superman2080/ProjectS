@@ -48,8 +48,8 @@ public class ItemManager : MonoBehaviour
             string itemName = tempItemList[i];
             if (string.IsNullOrEmpty(debugItemList[i]) == false)
                 itemName = debugItemList[i];
-            selectBtn[i].GetComponentInChildren<Text>().text = itemName;
-                
+            //selectBtn[i].GetComponentInChildren<Text>().text = itemName;
+            selectBtn[i].image.sprite = Resources.Load<Sprite>("Sprites/Card/" + itemName);
             selectBtn[i].onClick.AddListener(() =>
             {
                 ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
@@ -64,9 +64,11 @@ public class ItemManager : MonoBehaviour
     private List<string> GetRandomItemNames()
     {
         int rand = 0;
+        int cnt = 0;
         List<string> tempItemList = new List<string>();
         while (tempItemList.Count < 3)
         {
+            cnt = 0;
             while (true)
             {
                 rand = Random.Range(0, 10);
@@ -90,6 +92,14 @@ public class ItemManager : MonoBehaviour
                 }
                 if (notEqual == true)
                     break;
+                //Error prevantion code
+                if (cnt > 100)       
+                {
+                    tempItemList.Add(itemChart[0]["ItemName"].ToString());
+                    break;
+                }
+                cnt++;
+                //
             }
             tempItemList.Add(itemChart[rand]["ItemName"].ToString());
         }
