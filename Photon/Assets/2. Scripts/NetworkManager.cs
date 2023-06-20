@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class NetworkManager : MonoBehaviourPunCallbacks
@@ -35,7 +36,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
 
-    public void Disconnect() => PhotonNetwork.Disconnect();
+    public void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("MainScene");
+    }
 
     public override void OnConnectedToMaster()
     {
