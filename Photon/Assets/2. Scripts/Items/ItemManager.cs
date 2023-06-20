@@ -41,18 +41,19 @@ public class ItemManager : MonoBehaviour
             }
         }
 
-        List<string> tempItemList = GetRandomItemNames();
+        List<int> tempItemIDList = GetRandomItemID();
         for (int i = 0; i < selectBtn.Length; i++)
         {
             selectBtn[i].onClick.RemoveAllListeners();
-            string itemName = tempItemList[i];
+            int itemID = tempItemIDList[i];
             if (string.IsNullOrEmpty(debugItemList[i]) == false)
-                itemName = debugItemList[i];
+                itemID = int.Parse(debugItemList[i]);
             //selectBtn[i].GetComponentInChildren<Text>().text = itemName;
-            selectBtn[i].image.sprite = Resources.Load<Sprite>("Sprites/Card/" + itemName);
+            selectBtn[i].image.sprite = Resources.Load<Sprite>("Sprites/Card/" + itemChart[itemID]["ItemName"].ToString());
+            selectBtn[i].GetComponentInChildren<Text>().text = itemChart[itemID]["ItemDescription"].ToString();
             selectBtn[i].onClick.AddListener(() =>
             {
-                ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemName, owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
+                ItemCtrl item = PhotonNetwork.Instantiate("Items/" + itemChart[itemID]["ItemName"].ToString(), owner.transform.position, Quaternion.identity).GetComponent<ItemCtrl>();
                 item.pv.RPC(nameof(ItemCtrl.SetOwner), RpcTarget.AllBuffered, actorNum);
                 item.pv.RPC(nameof(ItemCtrl.OnGetItem), RpcTarget.AllBuffered, actorNum);
                 owner.audioSource.PlayOneShot(buttonSound);
@@ -61,11 +62,11 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    private List<string> GetRandomItemNames()
+    private List<int> GetRandomItemID()
     {
         int rand = 0;
         int cnt = 0;
-        List<string> tempItemList = new List<string>();
+        List<int> tempItemList = new List<int>();
         while (tempItemList.Count < 3)
         {
             cnt = 0;
@@ -83,7 +84,7 @@ public class ItemManager : MonoBehaviour
                 }
                 for (int i = 0; i < tempItemList.Count; i++)
                 {
-                    if (tempItemList[i] == itemChart[rand]["ItemName"].ToString())
+                    if (tempItemList[i] == int.Parse(itemChart[rand]["ItemID"].ToString()) - 1)
                     {
                         notEqual = false;
                         break;
@@ -95,13 +96,13 @@ public class ItemManager : MonoBehaviour
                 //Error prevantion code
                 if (cnt > 100)       
                 {
-                    tempItemList.Add(itemChart[0]["ItemName"].ToString());
+                    tempItemList.Add(0);
                     break;
                 }
                 cnt++;
                 //
             }
-            tempItemList.Add(itemChart[rand]["ItemName"].ToString());
+            tempItemList.Add(rand);
         }
         return tempItemList;
     }
